@@ -15,7 +15,7 @@ def request_sub(request):
 
     # If user is logged in and makes post request
     if request.method == 'POST':
-        print(request.POST)
+
         # If new comment is created
         if 'create_subscription' in request.POST:
             sub_form = SubscriberForm(data=request.POST)

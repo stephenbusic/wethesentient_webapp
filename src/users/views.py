@@ -117,40 +117,67 @@ def user_doesnt_exist(email, username):
 
 # Managing Users
 
-def login_user(request):
+def request_deactivate(request):
 
-    # Create new log in form
-    form = LoginUser(request.POST or None)
-    if form.is_valid():
+    # If user is logged in and makes post request
+    user = request.user
+    if request.method == 'POST' and user.is_authenticated:
 
-        # If form was submitted with no errors, get password
-        password = form.clean_password()
-        if password:
+        # Get data from homepage
+        email = user.email
+        username = user.username
 
-            # If password checked out, get email and its user
-            email = form.clean_email()
-            user = User.objects.get(email=email)
-            if user:
+        # Create token and build confirm link
+        token = encrypt(email + "-" + username + "-" + str(randint(10, 99)))
+        subscription_confirmation_url = request.build_absolute_uri(
+            reverse('users:deactivate_confirmation')) + "?token=" + token
 
-                # If user was retrieved successfully, log in
-                # user and then redirect them back to the post
-                login(request, user)
-                slug = request.POST.get('slug')
-                if slug:
-                    return HttpResponseRedirect(reverse('posts:show', kwargs={'slug': slug}))
-                else:
-                    return HttpResponseRedirect(reverse('posts:show_all_posts'))
+        # Send confirmation email and return status
+        status = user_email_utility.send_deactivate_email(email, username, subscription_confirmation_url)
+        if status == "sent":
+            msg = "Account deletion email sent. Check inbox to confirm."
+            foot = "Be sure to check your junk folder."
+        else:
+            msg = "Sorry. Sending confirmation email failed. Try again later!"
+            foot = ""
+        return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
-    return render(request, 'login.html', {'form': form})
+    #If form invalid, return to logout page
+    return render(request, 'account_logout', {})
 
 
-def logout_user(request):
+def deactivate_confirmation(request):
 
-    # If user is actually logged in, get user and log them out
-    logged_in = request.user.is_authenticated
-    if logged_in:
-        logout(request)
-        return HttpResponseRedirect(reverse('posts:show_all_posts'))
-    else:
-        msg = "You are not logged in."
+    # Make sure method is valid
+    if "POST" == request.method:
+        raise Http404
+
+    # Check if token, return error if not
+    token = request.GET.get("token", None)
+    if not token:
+        msg = "Invalid Link"
         return render(request, 'msgpage.html', {'msg': msg})
+
+    # Extract data from token, if successfully decrypted
+    token = decrypt(token)
+    if token:
+        token = token.split("-")
+
+        # Get requesting user's email and username
+        email = token[0]
+        username = token[1]
+
+        # If user with this email exists, and that user
+        # has same username, deactivate the user
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            if user.username == username:
+                user.active = False
+                user.save()
+                msg = "Account deleted. Take care!"
+                return render(request, 'msgpage.html', {'msg': msg})
+
+    # Return error is failed decrypt
+    msg = "Invalid Link"
+    return render(request, 'msgpage.html', {'msg': msg})
+

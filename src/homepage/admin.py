@@ -9,6 +9,4 @@ class MyUserAdmin(admin.ModelAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, MyUserAdmin)
-
 admin.site.unregister(Site)
-#admin.site.unregister(Group)
