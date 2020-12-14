@@ -7,9 +7,9 @@
 	<br>
 	<header class="major">
 		<h1>{{ agpost.title }}</h1>
-		<h4 class="lighten">By {{ agpost.author }}</h4>
+		<h4 class="lighten">By {{ agpost.author|safe }}</h4>
 	</header>
-	<p style="clear: both;"><span class="image right"><img src="{% static 'images/pic08.jpg' %}" alt="" /></span>
+	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
 	</p>
 	<br clear="both"><br><header class="major"><span class="date">{{ agpost.date }}</span></header>
