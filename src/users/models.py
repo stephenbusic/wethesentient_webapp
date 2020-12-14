@@ -5,5 +5,5 @@ from django.dispatch import receiver
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created:
+    if created and Group.objects.filter(name='Default').exists():
         instance.groups.add(Group.objects.get(name='Default'))
