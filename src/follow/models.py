@@ -11,4 +11,4 @@ class Subscriber(models.Model):
         verbose_name_plural = "Subscribers"
 
     def __str__(self):
-        return self.name
+        return self.username
