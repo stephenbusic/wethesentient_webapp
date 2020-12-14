@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="post">
+	<h2>Set a login so you can comment on posts :)</h2>
+	<form  method="post" class="form-horizontal">
+		{% csrf_token %}
+  		{{ form.source.errors }}
+  		{{ form.source }}
+		<div class="row gtr-uniform">
+			{% for field in form %}
+			<tr>
+				<div class="col-5">
+					{{ field }}
+				</div>
+			</tr>
+			{% endfor %}
+			<div class="col-2">
+				<ul class="actions">
+					<li><input type="submit" value="Submit" class="btn btn-primary btn-sm" /></li>
+				</ul>
+			</div>
+		</div>
+		<br>
+		<br>
+		<div class="row gtr-uniform">
+			{% if form.errors %}
+				{% for field in form %}
+					{% for error in field.errors %}
+						<h4>{{ error }}</h4>
+					{% endfor %}
+				{% endfor %}
+			{% else %}
+				<br>
+			{% endif %}
+		</div>
+	</form>
+</section>
+
+<script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script>
+<script>
+   function onSubmit(token) {
+     document.getElementById("demo-form").submit();
+   }
+</script>
+<button class="g-recaptcha"
+        data-sitekey="reCAPTCHA_site_key"
+        data-callback='onSubmit'
+        data-action='submit'>Submit</button>
+{% endblock content %}

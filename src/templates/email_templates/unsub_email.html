@@ -1,0 +1,18 @@
+{% load inlinecss %}
+{% inlinecss "css/email.css" %}
+<div style="padding: 20px; background: #fafafa;font-size:15px;">
+    Hey {{ first_name }}!<br>
+    <br>
+    <p>
+        Sorry to see you go! Click the link below to unsubscribe from the blog.
+    </p>
+    <a href="{{ confirmation_url }}">{{ confirmation_url }}</a><br>
+    <br>
+    <div class = "footer">
+        This is an automated message, please don't reply. You can reach me here at aaahhhghosts@gmail.com, though. Shoot me thoughts, suggestions, complaints, compliments, etc.. Whatever you like.
+        Thanks again visiting my strange blog :)
+    </div>
+    <br>
+    -Scuub
+</div>
+{% endinlinecss %}

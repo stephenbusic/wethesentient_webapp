@@ -1,0 +1,14 @@
+{% load inlinecss %}
+{% inlinecss "css/email.css" %}
+<div style="padding: 20px; background: #fafafa;font-size:15px;">
+    {{ desc }}<br>
+    <br>
+    <p>{{ body|truncatechars:500 }}</p>
+    Read the full post here: <a href="{{ post_url }}">{{ post_url }}</a>.<br>
+    <br>
+    <br>
+    <div class="footer">
+        Not feeling these emails anymore? Click here to unsubscribe: <a href="{{ unsubscribe_url }}">{{ unsubscribe_url }}</a>
+    </div>
+</div>
+{% endinlinecss %}

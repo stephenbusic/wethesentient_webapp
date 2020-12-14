@@ -1,0 +1,6 @@
+# Ignore database and virtual env
+SQLite3/
+venv/
+old_code/
+static_root/
+*.pyc

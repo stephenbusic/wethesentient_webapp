@@ -1,0 +1,35 @@
+{% load analytical %}
+<!DOCTYPE html>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+    <head>
+        {% analytical_head_top %}
+        {% include "head.html" %}
+        {% analytical_head_bottom %}
+    </head>
+    <body class="is-preload">
+        {% analytical_body_top %}
+        <div id="wrapper" class="fade-in">
+
+            {% block intro %}
+            {% endblock intro %}
+
+            {% include 'header.html' %}
+
+            <!-- Main -->
+            <div id="main">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+        {% analytical_body_bottom %}
+    </body>
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
+    {% include "scripts.html" %}
+</html>

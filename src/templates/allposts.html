@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+	<!-- Posts -->
+	<!-- <div class="col-12">
+        <select name="demo-category" id="demo-category">
+            <option value="">- Category -</option>
+            <option value="1">Philosophy</option>
+            <option value="1">Fiction</option>
+        </select>
+    </div> -->
+
+	{% if all_agposts.count > 0 %}
+		<section class="posts">
+			{% for agpost in all_agposts %}
+				<article>
+					<header>
+						<h2>{{ agpost.title }}</h2>
+					</header>
+					<div class="image fit"><img src="{{ agpost.thumb.url }}" alt="" /></div>
+					<p>{{ agpost.desc|safe }}</p>
+					<ul class="actions special">
+						<li><a href="{% url 'posts:show' agpost.slug %}" class="button">Read More</a></li>
+					</ul>
+				</article>
+			{% endfor %}
+		</section>
+	{% else %}
+		<section>
+			<h2>No posts found. Check back later!</h2>
+		</section>
+	{% endif %}
+	<br>
+
+	<!-- Footer w/ Page Nav -->
+	<!-- <footer>
+        <div class="pagination">
+            <a href="#" class="previous">Prev</a>
+            <a href="#" class="page active">1</a>
+            <a href="#" class="page">2</a>
+            <a href="#" class="page">3</a>
+            <span class="extra">&hellip;</span>
+            <a href="#" class="page">8</a>
+            <a href="#" class="page">9</a>
+            <a href="#" class="page">10</a>
+            <a href="#" class="next">Next</a>
+        </div>
+    </footer> -->
+{% endblock content %}
