@@ -103,11 +103,18 @@ def sub_confirmation(request):
         sub_data["email"] = token[0]
         sub_data["username"] = token[1]
 
-        new_sub = Subscriber(**sub_data)
-        new_sub.save()
+        # If subscriber with email does not already exist, create account
+        if not Subscriber.objects.filter(sub_data["email"]).exists():
+            new_sub = Subscriber(**sub_data)
+            new_sub.save()
+            msg = "Subscription confirmed. Thank you for following my blog!"
+            return render(request, 'msgpage.html', {'msg': msg})
 
-        msg = "Subscription confirmed. Thank you for following my blog!"
-        return render(request, 'msgpage.html', {'msg': msg})
+       # If subscriber does already exists, inform user and drop account
+        else:
+            msg = "Email is already subscribed!"
+            foot = "If you are trying to unsubscribe, look for a unsubscription link at the bottom of any of my emails."
+            return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
     else:
         # Return error is failed decrypt
         msg = "Invalid Link"
@@ -139,13 +146,3 @@ def unsub_confirmation(request):
         msg = "Invalid Link"
 
     return render(request, 'msgpage.html', {'msg': msg})
-
-
-def sub_doesnt_exist(email):
-
-    # Check if user already exists for this email
-    try:
-        sub = Subscriber.objects.get(email=email)
-        return False
-    except Subscriber.DoesNotExist:
-        return True
