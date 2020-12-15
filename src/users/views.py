@@ -99,7 +99,7 @@ def request_deletion(request):
 
     # If user is logged in and makes post request
     user = request.user
-    if request.method == 'POST' and user.is_authenticated:
+    if user.is_authenticated:
 
         # Get data from homepage
         email = user.email

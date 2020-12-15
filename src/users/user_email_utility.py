@@ -87,6 +87,7 @@ def send_replier_reply_notice(reply, parent_reply):
     subject = "Someone Responded to your Reply"
     return send_email(email, subject, html_content, text_content)
 
+
 def send_deletion_email(email, username, deletion_confirmation_url):
 
     #Build dictionary to store email-related variables
