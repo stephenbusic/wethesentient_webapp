@@ -15,7 +15,7 @@ RECAPTCHA_SITE_KEY = config.reCAPTCHA['site_key']
 RECAPTCHA_SECRET_KEY = config.reCAPTCHA['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 SECURE_BROWSER_XSS_FILTER = True
 CSRF_COOKIE_SECURE = True
@@ -24,7 +24,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_REFERRER_POLICY = 'same-origin'
 
-if not DEBUG:
+if DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
 
@@ -114,7 +114,7 @@ WSGI_APPLICATION = 'agwebsite.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 
-if DEBUG:
+if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
