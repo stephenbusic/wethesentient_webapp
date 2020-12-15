@@ -16,9 +16,13 @@
         <button type="submit">{% trans 'Logout' %}</button>
     </form>
     <br>
-    <h4><b class="lighten">Want to request a deletion of your account? (Warning: this will remove
-        all of your comments and replies!)</b></h4>
-    <button href="{% url 'users:request_deletion">Request Deletion</button>
+
+    <h3><b class="lighten">Want to request a deletion of your account?</b></h3>
+    <p class="lighten">(Warning: this will remove all of your comments and replies!)</p>
+    <form method="post" action="{% url 'users:request_deletion' %}">
+        {% csrf_token %}
+        <input class="lighten" type="submit" value="Request Deletion"/>
+    </form>
     <br>
 </section>
 {% endblock %}

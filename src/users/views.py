@@ -79,11 +79,10 @@ def unnotify_reply_confirmation(request):
 
 
 # Utility functions
-
 def save_user(email, username, password):
-
     # Save user to blog
-    if user_doesnt_exist(email, username):
+    if not User.objects.filter(email=email).exists() and \
+            not User.objects.filter(username=username).exists():
         new_user = User()
         new_user.email = email
         new_user.username = username
@@ -93,26 +92,6 @@ def save_user(email, username, password):
         return True
     else:
         return False
-
-
-def user_doesnt_exist(email, username):
-
-    # Check if user already exists for this email
-    try:
-        user = User.objects.get(email=email)
-        return False
-    except User.DoesNotExist:
-        pass
-
-    # Check if user already exists for this username
-    try:
-        user = User.objects.get(username=username)
-        return False
-    except User.DoesNotExist:
-        pass
-
-    # Return false if neither check is true
-    return True
 
 
 # Request deletion of account
@@ -141,13 +120,12 @@ def request_deletion(request):
             foot = ""
         return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
-    #If form invalid, return to logout page
-    return render(request, 'account_logout', {})
+    # If form invalid, return to logout page
+    return HttpResponseRedirect(reverse('account_logout'))
 
 
 # Confirm deletion of account
 def deletion_confirmation(request):
-
     # Make sure method is valid
     if "POST" == request.method:
         raise Http404
@@ -183,7 +161,6 @@ def deletion_confirmation(request):
 
 # Function for deactivating users
 def delete_user(user):
-
     username = user.username
     try:
         # Delete all comments and replies first
