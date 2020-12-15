@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from posts.models import AGPost
+from posts.models import AGPost, Comment, Reply
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponseRedirect
@@ -115,9 +115,8 @@ def user_doesnt_exist(email, username):
     return True
 
 
-# Managing Users
-
-def request_deactivate(request):
+# Request deletion of account
+def request_deletion(request):
 
     # If user is logged in and makes post request
     user = request.user
@@ -129,11 +128,11 @@ def request_deactivate(request):
 
         # Create token and build confirm link
         token = encrypt(email + "-" + username + "-" + str(randint(10, 99)))
-        subscription_confirmation_url = request.build_absolute_uri(
-            reverse('users:deactivate_confirmation')) + "?token=" + token
+        deletion_confirmation_url = request.build_absolute_uri(
+            reverse('users:deletion_confirmation')) + "?token=" + token
 
         # Send confirmation email and return status
-        status = user_email_utility.send_deactivate_email(email, username, subscription_confirmation_url)
+        status = user_email_utility.send_deletion_email(email, username, deletion_confirmation_url)
         if status == "sent":
             msg = "Account deletion email sent. Check inbox to confirm."
             foot = "Be sure to check your junk folder."
@@ -146,7 +145,8 @@ def request_deactivate(request):
     return render(request, 'account_logout', {})
 
 
-def deactivate_confirmation(request):
+# Confirm deletion of account
+def deletion_confirmation(request):
 
     # Make sure method is valid
     if "POST" == request.method:
@@ -172,12 +172,35 @@ def deactivate_confirmation(request):
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             if user.username == username:
-                user.active = False
-                user.save()
-                msg = "Account deleted. Take care!"
-                return render(request, 'msgpage.html', {'msg': msg})
+                if delete_user(user):
+                    msg = "Account deleted. Take care!"
+                    return render(request, 'msgpage.html', {'msg': msg})
 
     # Return error is failed decrypt
-    msg = "Invalid Link"
+    msg = "Error"
     return render(request, 'msgpage.html', {'msg': msg})
 
+
+# Function for deactivating users
+def delete_user(user):
+
+    username = user.username
+    try:
+        # Delete all comments and replies first
+        for comment in Comment.objects.filter(user=user):
+            for reply in comment.replies:
+                reply.delete()
+            comment.delete()
+
+        for reply in Reply.objects.filter(user=user):
+            reply.delete()
+
+        # Deactivate user
+        user.active = False
+        user.delete()
+    except Exception as e:
+        logging.getLogger("error").error("There was an exception will deleting user ", username)
+        return False
+
+    logging.getLogger("DEBUG").error("User ", username, " deleted.")
+    return True

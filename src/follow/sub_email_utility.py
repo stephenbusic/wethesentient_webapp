@@ -45,7 +45,7 @@ def send_unsub_email(email, username, unsub_confirmation_url):
     data["email"] = email
     data["first_name"] = username.split(' ')[0]
     data["confirmation_url"] = unsub_confirmation_url
-    template = get_template("email_templates/unsub_email.html")
+    template = get_template("email_templates/deletion_email.html")
 
     #Render email text (html and plain) and set subjet
     html_content = template.render(data)
@@ -59,7 +59,7 @@ def send_subs_new_post_email(agpost):
     for sub in Subscriber.objects.all():
 
         domain = Site.objects.get_current().domain
-        absolute_path = 'http://{}'.format(domain)
+        absolute_path = 'https://{}'.format(domain)
 
         # Build unsubscribe link
         token = encrypt(sub.email + "-" + sub.username + "-" + str(randint(10,99)))

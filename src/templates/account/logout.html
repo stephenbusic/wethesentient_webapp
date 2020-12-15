@@ -9,11 +9,16 @@
     <h2>{% trans "Logout" %}</h2>
     <p>{% trans 'You will be unable to comment. Are you sure you want to logout?' %}</p>
     <form method="post" action="{% url 'account_logout' %}">
-    {% csrf_token %}
-    {% if redirect_field_value %}
-    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-    {% endif %}
-    <button type="submit">{% trans 'Logout' %}</button>
-</form>
+        {% csrf_token %}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <button type="submit">{% trans 'Logout' %}</button>
+    </form>
+    <br>
+    <h4><b class="lighten">Want to request a deletion of your account? (Warning: this will remove
+        all of your comments and replies!)</b></h4>
+    <button href="{% url 'users:request_deletion">Request Deletion</button>
+    <br>
 </section>
 {% endblock %}

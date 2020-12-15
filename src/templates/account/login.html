@@ -17,7 +17,6 @@
     to comment on posts.<!--<a href="{{ signup_url }}">sign up</a>
   for a {{ site_name }} account and sign in below: -->{% endblocktrans %}</p>
 
-
   <div class="socialaccount_ballot">
     <section class="socialaccount_providers">
       <div class="align-center">
@@ -36,7 +35,7 @@
     <br>
   </div>
   {% include "socialaccount/snippets/login_extra.html" %}
-    <h3><b class="lighten">Feel free to read the <a href="{% url 'homepage:show_policy' %}"><u>AAAHHHghosts privacy policy</u></a></b></h3>
+    <h4>Feel free to read the <a href="{% url 'homepage:show_policy' %}"><u>AAAHHHghosts privacy policy</u></a></h4>
     <br>
 </section>
 {% endif %}

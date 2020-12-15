@@ -26,7 +26,7 @@ def send_email(email, subject, html_content, text_content):
 def send_commenter_reply_notice(reply):
 
     domain = Site.objects.get_current().domain
-    absolute_path = 'http://{}'.format(domain)
+    absolute_path = 'https://{}'.format(domain)
 
     parent_comment = reply.comment
     email = parent_comment.email
@@ -49,7 +49,7 @@ def send_commenter_reply_notice(reply):
     data["unnotify_url"] = unnotify_confirmation_url
     template = get_template("email_templates/reply_notify_email.html")
 
-    # Render email text (html and plain) and set subjet
+    # Render email text (html and plain) and set subject
     html_content = template.render(data)
     text_content = strip_tags(html_content)
     subject = "Someone Replied to your Comment"
@@ -59,7 +59,7 @@ def send_commenter_reply_notice(reply):
 def send_replier_reply_notice(reply, parent_reply):
 
     domain = Site.objects.get_current().domain
-    absolute_path = 'http://{}'.format(domain)
+    absolute_path = 'https://{}'.format(domain)
 
     email = parent_reply.email
     trun_date = str(parent_reply.created_on)[11:26]
@@ -81,8 +81,23 @@ def send_replier_reply_notice(reply, parent_reply):
     data["unnotify_url"] = unnotify_confirmation_url
     template = get_template("email_templates/reply_notify_email.html")
 
-    # Render email text (html and plain) and set subjet
+    # Render email text (html and plain) and set subject
     html_content = template.render(data)
     text_content = strip_tags(html_content)
     subject = "Someone Responded to your Reply"
     return send_email(email, subject, html_content, text_content)
+
+def send_deletion_email(email, username, deletion_confirmation_url):
+
+    #Build dictionary to store email-related variables
+    data = dict()
+    data["first_name"] = username.split(' ')[0]
+    data["deletion_url"] = deletion_confirmation_url
+    template = get_template("email_templates/deletion_email.html")
+
+    #Render email text (html and plain) and set subjet
+    html_content = template.render(data)
+    text_content = strip_tags(html_content)
+    subject = "Confirm Deletion"
+    return send_email(email, subject, html_content, text_content)
+
