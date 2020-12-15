@@ -55,7 +55,7 @@ def request_sub(request):
                         return render(request, 'msgpage.html', {'msg': msg})
 
                     # Check if user already exists for this email or username
-                    if sub_doesnt_exist(email):
+                    if not Subscriber.objects.filter(email=email).exists():
 
                         # Create token and build confirm link
                         token = encrypt(email + "-" + username + "-" + str(randint(10, 99)))
