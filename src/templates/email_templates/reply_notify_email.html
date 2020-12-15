@@ -3,13 +3,11 @@
 <div style="padding: 20px; background: #fafafa;font-size:15px;">
     Hey {{ first_name }},<br>
     <br>
-    Someone replied to your comment. Here's what they said:
+    User "{{ replier_name }}" replied to your comment. Here's what they said:
     <br>
     <p>"{{ body }}"</p>
-    From {{ replier_name }}
     <br>
-    <br>
-    To respond, visit the comment section on the original post, "{{ agpost_title }}":<br>
+    To respond, visit the comment section for the post "{{ agpost_title }}":<br>
     <a href="{{ post_url }}">{{ post_url }}</a>.<br>
     <br>
     <div class="footer">
