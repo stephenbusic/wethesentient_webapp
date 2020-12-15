@@ -59,7 +59,7 @@ def send_subs_new_post_email(agpost):
     for sub in Subscriber.objects.all():
 
         domain = Site.objects.get_current().domain
-        absolute_path = 'https://{}'.format(domain)
+        absolute_path = 'https://www.{}'.format(domain)
 
         # Build unsubscribe link
         token = encrypt(sub.email + "-" + sub.username + "-" + str(randint(10,99)))

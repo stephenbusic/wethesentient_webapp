@@ -26,7 +26,7 @@ def send_email(email, subject, html_content, text_content):
 def send_commenter_reply_notice(reply):
 
     domain = Site.objects.get_current().domain
-    absolute_path = 'https://{}'.format(domain)
+    absolute_path = 'https://www.{}'.format(domain)
 
     parent_comment = reply.comment
     email = parent_comment.email
@@ -59,7 +59,7 @@ def send_commenter_reply_notice(reply):
 def send_replier_reply_notice(reply, parent_reply):
 
     domain = Site.objects.get_current().domain
-    absolute_path = 'https://{}'.format(domain)
+    absolute_path = 'https://www.{}'.format(domain)
 
     email = parent_reply.email
     trun_date = str(parent_reply.created_on)[11:26]
