@@ -34,6 +34,6 @@ admin.site.site_title = 'admin | AAAHHHghosts'
 admin.site.index_title = ''
 
 
-if settings.DEBUG:
+if not settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
