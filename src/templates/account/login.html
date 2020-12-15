@@ -19,7 +19,6 @@
 
 
   <div class="socialaccount_ballot">
-
     <section class="socialaccount_providers">
       <div class="align-center">
 
@@ -37,20 +36,8 @@
     <br>
   </div>
   {% include "socialaccount/snippets/login_extra.html" %}
-    <h4>Privacy Policy (Effective 14 December 2020):</h4>
-    <p>Stephen Busic here, creator and owner of the AAAHHHghosts blog. This login page is intended to gather and save the
-        minimum information required for you to post comments and replies to my blog. Your privacy is important to me.
-        It is the policy of my blog to make clear what information I collect from anyone who logs in and thereby creates
-        a user account on my blog. Logging in using the social media options listed above provides my blog only with the
-        username and primary email address associated with that social media account. I am NOT provided with any
-        passwords or additional sensitive information. Your information will not be disclosed publicly or with
-        third-parties, except when required to by law. Your username will only be displayed alongside your
-        comments/replies if you decide to post to my articles. Readers must be <b>above the age of 13</b> to login. You
-        may delete your account anytime using the link provided on the logout page. Logging in will be regarded as
-        acceptance of this policy. If you have any further questions about how I handle your information, feel free to
-        contact me at <b>aaahhhghosts@gmail.com</b>. Thank you for showing interest in my blog, and I look forward to
-        reading any comments you post!
-    </p>
+    By logging in, you are claiming to have read and understood the <a href="{% url 'homepage:show_policy' %}">AAAHHHghosts privacy policy</a>!
+    <br>
 </section>
 {% endif %}
 {% endblock content %}

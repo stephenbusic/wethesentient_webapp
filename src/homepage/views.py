@@ -14,3 +14,9 @@ def show_homepage(request):
         newest_count = agp_count
     latest_agposts = AGPost.objects.order_by('-date')[:newest_count]
     return render(request, 'index.html', {'latest_agposts': latest_agposts})
+
+
+def show_policy(request):
+
+    # Display AAAHHHghosts privacy policy
+    return render(request, 'policy.html', {})
