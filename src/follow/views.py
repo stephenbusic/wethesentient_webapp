@@ -104,7 +104,7 @@ def sub_confirmation(request):
         sub_data["username"] = token[1]
 
         # If subscriber with email does not already exist, create account
-        if not Subscriber.objects.filter(sub_data["email"]).exists():
+        if not Subscriber.objects.filter(email=sub_data["email"]).exists():
             new_sub = Subscriber(**sub_data)
             new_sub.save()
             msg = "Subscription confirmed. Thank you for following my blog!"
