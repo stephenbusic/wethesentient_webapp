@@ -15,7 +15,7 @@ RECAPTCHA_SITE_KEY = config.reCAPTCHA['site_key']
 RECAPTCHA_SECRET_KEY = config.reCAPTCHA['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 SECURE_BROWSER_XSS_FILTER = True
 CSRF_COOKIE_SECURE = True
@@ -24,7 +24,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_REFERRER_POLICY = 'same-origin'
 
-if DEBUG:
+if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
 
@@ -114,7 +114,7 @@ WSGI_APPLICATION = 'agwebsite.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 
-if not DEBUG:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -224,7 +224,7 @@ MEDIA_URL = '/media/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 VENV_PATH = os.path.dirname(BASE_DIR)
 STATIC_ROOT = os.path.join(VENV_PATH, 'static_root')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(VENV_PATH, 'media_root')
 
 # --- CKeditor Settings ---
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
