@@ -162,22 +162,23 @@ def deletion_confirmation(request):
 # Function for deactivating users
 def delete_user(user):
     username = str(user.username)
+    email = str(user.email)
     try:
         # Delete all comments and replies first
-        for comment in Comment.objects.filter(user=user):
+        for comment in Comment.objects.filter(email=email):
             for reply in comment.replies:
                 reply.delete()
             comment.delete()
 
-        for reply in Reply.objects.filter(user=user):
+        for reply in Reply.objects.filter(email=email):
             reply.delete()
 
         # Deactivate user
         user.active = False
         user.delete()
     except Exception as e:
-        logging.getLogger("error").error("There was an exception will deleting user " + username)
+        logging.getLogger("error").error("There was an exception will deleting user ", username)
         return False
 
-    logging.getLogger("DEBUG").debug("User " + username + " deleted.")
+    logging.getLogger("DEBUG").debug("User ", username, " deleted.")
     return True
