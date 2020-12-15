@@ -161,7 +161,7 @@ def deletion_confirmation(request):
 
 # Function for deactivating users
 def delete_user(user):
-    username = user.username
+    username = str(user.username)
     try:
         # Delete all comments and replies first
         for comment in Comment.objects.filter(user=user):
