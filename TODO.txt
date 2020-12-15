@@ -1,0 +1,7 @@
+1.	Prevent weird or offensive usernames
+2.	Expiring tokens in links
+3.	Add tab functionality to admin rich text editor
+4.	Add pages to allposts
+5.	Edit and delete comments/replies
+6.	Add "are you sure?" to unsubscribe link
+
