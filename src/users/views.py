@@ -176,8 +176,8 @@ def delete_user(user):
         user.active = False
         user.delete()
     except Exception as e:
-        logging.getLogger("error").error("There was an exception will deleting user ", username)
+        logging.getLogger("error").error("There was an exception will deleting user " + username)
         return False
 
-    logging.getLogger("DEBUG").error("User ", username, " deleted.")
+    logging.getLogger("DEBUG").debug("User " + username + " deleted.")
     return True
