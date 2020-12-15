@@ -16,7 +16,7 @@ RECAPTCHA_SECRET_KEY = config.reCAPTCHA['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-#SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = True
 SECURE_BROWSER_XSS_FILTER = True
 CSRF_COOKIE_SECURE = True
 #SESSION_COOKIE_SECURE = True
