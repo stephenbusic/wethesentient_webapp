@@ -79,5 +79,5 @@ def send_subs_new_post_email(agpost):
         # Render email text (html and plain) and set subjet
         html_content = template.render(data)
         text_content = strip_tags(html_content)
-        subject = agpost.title
+        subject = "New Post: " + str(agpost.title)
         status = send_email(sub.email, subject, html_content, text_content)
