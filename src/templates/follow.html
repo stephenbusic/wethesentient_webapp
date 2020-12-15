@@ -22,10 +22,11 @@
 			<input type="hidden" name="g-recaptcha-response" id='recaptcha'>
 			<input type="hidden" name="create_subscription" id="create_subscription" value="created">
 		</form>
+		<br>
+		<p>Feel free to read the <a href="{% url 'homepage:show_policy' %}"><u>AAAHHHghosts privacy policy</u></a>
+		<br>
 	</section>
-	<br>
-	<p>By subscribing, you are claiming to have read and understood the <a href="{% url 'homepage:show_policy' %}">AAAHHHghosts privacy policy</a>!</p>
-	<br>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
 	<script type="text/javascript">
