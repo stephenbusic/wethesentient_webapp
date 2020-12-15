@@ -27,13 +27,16 @@ SECURE_REFERRER_POLICY = 'same-origin'
 if DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
-    #SESSION_COOKIE_SAMESITE = 'Strict'
 
-    #SECURE_HSTS_SECONDS = 0
-    #SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    #SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_SECONDS = 30
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
-ALLOWED_HOSTS = ['www.aaahhhghosts.com', '127.0.0.1']
+    ALLOWED_HOSTS = ['www.aaahhhghosts.com', '127.0.0.1']
+
+else:
+    ALLOWED_HOSTS = ['www.aaahhhghosts.com', '127.0.0.1']
+
 
 #Email
 EMAIL_USE_TLS = True
