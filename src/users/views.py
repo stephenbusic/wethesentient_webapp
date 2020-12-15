@@ -166,7 +166,7 @@ def delete_user(user):
     try:
         # Delete all comments and replies first
         for comment in Comment.objects.filter(email=email):
-            for reply in comment.replies:
+            for reply in comment.replies.all():
                 reply.delete()
             comment.delete()
 
