@@ -1,7 +1,11 @@
 1.	Prevent weird or offensive usernames
 2.	Expiring tokens in links
 3.	Add tab functionality to admin rich text editor
-4.	Add pages to allposts
-5.	Edit and delete comments/replies
+4.	Add paginator to allposts
+5.	Let users edit and delete their comments/replies
 6.	Add "are you sure?" to unsubscribe link
+7.	Adjust background for mobile devices
+		-zoom in photo for sub 600
+		-shrink text for sub 600
+8.	Log social login errors
 

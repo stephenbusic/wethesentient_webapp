@@ -24,7 +24,7 @@ class AGPost(models.Model):
     date = models.DateField(auto_now_add=True)
     thumb = models.ImageField(upload_to=generate_imagepath, default='default_thumb.jpg', blank=True)
     square_thumb = models.ImageField(upload_to=generate_imagepath, default='default_square_thumb.jpg', blank=True)
-    email_subs = models.BooleanField(default=True)
+    email_subs = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-date']

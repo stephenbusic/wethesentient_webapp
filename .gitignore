@@ -1,4 +1,5 @@
 # Ignore database and virtual env
+.idea/
 SQLite3/
 venv/
 old_code/
