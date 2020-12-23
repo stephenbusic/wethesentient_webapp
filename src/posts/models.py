@@ -17,7 +17,7 @@ def generate_imagepath(self, filename):
 class AGPost(models.Model):
     title = models.CharField(max_length=160)
     author = models.CharField(max_length=160, default="Stephen Busic")
-    desc = RichTextField(max_length=240)
+    desc = RichTextField(max_length=500)
     slug = models.SlugField(max_length=160, editable=False)
     body = RichTextUploadingField()
     sources = RichTextUploadingField()
