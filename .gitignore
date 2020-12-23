@@ -5,3 +5,4 @@ venv/
 old_code/
 static_root/
 *.pyc
+TODO.txt
