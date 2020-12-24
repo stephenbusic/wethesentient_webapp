@@ -4028,6 +4028,11 @@ input, select, textarea {
 				width: 100%;
 			}
 
+            /* Reduce font size when main takes up whole screen */
+			#main > .post {
+					font-size: 90%;
+			}
+
 		}
 
 /* Footer */
