@@ -236,7 +236,7 @@ CKEDITOR_CONFIGS = {
             ['TextColor', 'BGColor'],
             ['SpecialChar'], ['Source'],
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Font', 'FontSize', 'Subscript', 'Superscript'],
+            ['Font', 'Subscript', 'Superscript'],
             ['NumberedList', 'BulletedList'],
             ['Indent', 'Outdent'],
             ['Maximize'],
