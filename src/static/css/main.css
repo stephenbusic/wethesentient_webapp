@@ -377,7 +377,7 @@ input, select, textarea {
         color: #bababa !important;
         font-family: "Source Sans Pro", Helvetica, sans-serif;
 		font-weight: 900;
-		line-height: 1.5;
+		line-height: 2;
 		letter-spacing: 0.075em;
 		text-transform: uppercase;
 		margin: 0 0 0.5rem 0;
@@ -4033,6 +4033,10 @@ input, select, textarea {
 					font-size: 90%;
 			}
 
+			/* Reduce space above and below author */
+			.lighten {
+                line-height: 0.5;
+            }
 		}
 
 /* Footer */
