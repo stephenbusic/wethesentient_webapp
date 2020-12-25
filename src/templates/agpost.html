@@ -12,7 +12,7 @@
 	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
 		<ul class="align-center">
-			<li><input value="Show Sources" id="sources_click"></li>
+			<li><input class="align-center" value="Show Sources" id="sources_click"></li>
 		</ul>
 		<div id="sources">
 			{{ agpost.sources|safe }}
@@ -179,14 +179,15 @@
 
 			// Get sources div
 			var sources_div = $("#sources");
+			var sources_btn = $("#sources_click");
 
 			// If sources is hidden, show. Else, hide.
 			if (sources_div.is(":hidden")) {
 				sources_div.show();
-				sources_div.value = "Hide Sources";
+				sources_btn.value = "Hide Sources";
 		  	} else {
 				sources_div.hide();
-				sources_div.value = "Show Sources";
+				sources_btn.value = "Show Sources";
 		  	}
 		}
 
