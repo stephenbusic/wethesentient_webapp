@@ -11,7 +11,9 @@
 	</header>
 	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
-		<button class="align-center" id="sources_click">Show Sources</button>
+		<ul class="align-center">
+			<li><input value="Show Sources" id="sources_click"></li>
+		</ul>
 		<div id="sources">
 			{{ agpost.sources|safe }}
 		</div>
@@ -181,10 +183,10 @@
 			// If sources is hidden, show. Else, hide.
 			if (sources_div.is(":hidden")) {
 				sources_div.show();
-				sources_div.text = "Hide Sources";
+				sources_div.value = "Hide Sources";
 		  	} else {
 				sources_div.hide();
-				sources_div.text = "Show Sources";
+				sources_div.value = "Show Sources";
 		  	}
 		}
 
