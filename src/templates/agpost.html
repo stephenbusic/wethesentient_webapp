@@ -12,10 +12,10 @@
 	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
 		<div class="align-center">
+			<hr>
 			<input value="Show Sources" type="button" id="sources_click">
 		</div>
 		<div id="sources">
-			<hr>
 			{{ agpost.sources|safe }}
 		</div>
 	</p>
@@ -163,7 +163,10 @@
 			reply_buttons.forEach(function(currentBtn){
 
 				//Add toggle "show sources" function to button
-				$("#sources_click").click(function(e) { show_sources(e) });
+				$("#sources_click").click(function(e) {
+					e.preventDefault();
+					show_sources();
+				});
 				$("#sources").hide();
 
 				// Get clicked id for each reply_click button in page
@@ -176,10 +179,7 @@
 		}
 
 		// Function for showing sources
-		function show_sources(e) {
-
-			// Prevent default behavior
-			e.preventDefault();
+		function show_sources() {
 
 			// Get sources div
 			var sources_div = $("#sources");
