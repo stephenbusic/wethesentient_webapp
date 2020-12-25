@@ -163,10 +163,7 @@
 			reply_buttons.forEach(function(currentBtn){
 
 				//Add toggle "show sources" function to button
-				$("#sources_click").click(function(e) {
-					e.preventDefault();
-					show_sources();
-				});
+				$("#sources_click").click(function() {	show_sources() });
 				$("#sources").hide();
 
 				// Get clicked id for each reply_click button in page
