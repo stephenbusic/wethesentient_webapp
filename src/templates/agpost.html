@@ -11,7 +11,7 @@
 	</header>
 	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
-		<button class="align-center" content="Show Sources" id="sources_click"></button>
+		<button class="align-center" id="sources_click">Show Sources</button>
 		<div id="sources">
 			{{ agpost.sources|safe }}
 		</div>
@@ -161,6 +161,7 @@
 
 				//Add toggle "show sources" function to button
 				$("#sources_click").click(function() { show_sources() });
+				$("#sources_click").hide();
 
 				// Get clicked id for each reply_click button in page
 				var clicked_id = currentBtn.id.split('reply_click_')[1];
@@ -180,10 +181,10 @@
 			// If sources is hidden, show. Else, hide.
 			if (sources_div.is(":hidden")) {
 				sources_div.show();
-				sources_div.textContent = "Hide Sources";
+				sources_div.text = "Hide Sources";
 		  	} else {
 				sources_div.hide();
-				sources_div.textContent = "Show Sources";
+				sources_div.text = "Show Sources";
 		  	}
 		}
 
