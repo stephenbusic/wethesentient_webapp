@@ -11,10 +11,11 @@
 	</header>
 	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
-		<ul class="align-center">
-			<li><input class="align-center" value="Show Sources" id="sources_click"></li>
-		</ul>
+		<div class="align-center">
+			<input value="Show Sources" type="button" id="sources_click">
+		</div>
 		<div id="sources">
+			<span></span>
 			{{ agpost.sources|safe }}
 		</div>
 	</p>
