@@ -15,7 +15,7 @@
 			<input value="Show Sources" type="button" id="sources_click">
 		</div>
 		<div id="sources">
-			<span></span>
+			<hr>
 			{{ agpost.sources|safe }}
 		</div>
 	</p>
@@ -163,7 +163,7 @@
 			reply_buttons.forEach(function(currentBtn){
 
 				//Add toggle "show sources" function to button
-				$("#sources_click").click(function() { show_sources() });
+				$("#sources_click").click(function(e) { show_sources(e) });
 				$("#sources").hide();
 
 				// Get clicked id for each reply_click button in page
@@ -176,7 +176,10 @@
 		}
 
 		// Function for showing sources
-		function show_sources() {
+		function show_sources(e) {
+
+			// Prevent default behavior
+			e.preventDefault();
 
 			// Get sources div
 			var sources_div = $("#sources");
