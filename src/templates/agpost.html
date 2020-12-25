@@ -11,7 +11,10 @@
 	</header>
 	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
-		{{ agpost.sources|safe }}
+		<button value="Show Sources"></button>
+		<div class="align-center" id="sources">
+			{{ agpost.sources|safe }}
+		</div>
 	</p>
 	<br clear="both"><br><header class="major"><span class="date">{{ agpost.date }}</span></header>
 
@@ -156,6 +159,9 @@
 			const reply_buttons = document.querySelectorAll('.reply_click');
 			reply_buttons.forEach(function(currentBtn){
 
+				//Add toggle "show sources" function to button
+				$("#sources").click(function() { show_sources() });
+
 				// Get clicked id for each reply_click button in page
 				var clicked_id = currentBtn.id.split('reply_click_')[1];
 
@@ -165,10 +171,27 @@
 			});
 		}
 
+		// Function for showing sources
+		function show_sources() {
+
+			// Get sources div
+			var sources_div = $("#sources");
+
+			// If sources is hidden, show. Else, hide.
+			if (sources_div.is(":hidden")) {
+				sources_div.show();
+				sources_div.value = "Hide Sources";
+		  	} else {
+				sources_div.hide();
+				sources_div.value = "Show Sources";
+		  	}
+		}
+
+		// Function for showing reply forms
 		function show_reply_form(clicked_id) {
 
 			// Get and show current reply form
-			var current_form = $("#reply_form_" + clicked_id)
+			var current_form = $("#reply_form_" + clicked_id);
 			current_form.show();
 
 			// Hide all other reply forms
@@ -179,16 +202,17 @@
 				var checked_id = currentBtn.id.split('reply_form_')[1];
 
 				if (checked_id !== clicked_id) {
-					var other_form = $("#reply_form_" + checked_id)
+					var other_form = $("#reply_form_" + checked_id);
 					other_form.hide();
 				}
 			});
 		}
 
+		// Function for hiding reply forms
 		function hide_reply_form(clicked_id) {
 
 			// Hide current reply form
-			var current_form = $("#reply_form_" + clicked_id)
+			var current_form = $("#reply_form_" + clicked_id);
 			current_form.hide();
 		}
 
