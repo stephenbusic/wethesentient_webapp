@@ -19,7 +19,7 @@
 			{{ agpost.sources|safe }}
 		</div>
 	</p>
-	<br clear="both"><br><header class="major"><span class="date">{{ agpost.date }}</span></header>
+	<br clear="both"><header class="major"><span class="date">{{ agpost.date }}</span></header>
 
 	<!-- Comment Form -->
 	<h2>Leave a comment</h2>
@@ -143,12 +143,42 @@
 	</div>
 </section>
 
+<!-- Create JQuery for hiding and showing reply forms -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function() {
+
+		//Add toggle "show sources" function to button
+		$("#sources_click").click(function() {	show_sources() });
+		$("#sources").hide();
+	});
+
+	// Function for showing sources
+	function show_sources() {
+
+		// Get sources div
+		var sources_div = $("#sources");
+		var sources_btn = $("#sources_click");
+
+		// If sources is hidden, show. Else, hide.
+		if (sources_div.is(":hidden")) {
+			sources_div.show();
+			sources_btn.val("Hide Sources");
+		} else {
+			sources_div.hide();
+			sources_btn.val("Show Sources");
+		}
+	}
+
+</script>
+
 {% if user.is_authenticated %}
 {% if perms.posts.add_comment %}
 {% if perms.posts.add_reply %}
-	<!-- Create JQuery for hiding and showing reply forms -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-	<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+
 	<script type="text/javascript">
 
 		$(document).ready(function() {
@@ -162,10 +192,6 @@
 			const reply_buttons = document.querySelectorAll('.reply_click');
 			reply_buttons.forEach(function(currentBtn){
 
-				//Add toggle "show sources" function to button
-				$("#sources_click").click(function() {	show_sources() });
-				$("#sources").hide();
-
 				// Get clicked id for each reply_click button in page
 				var clicked_id = currentBtn.id.split('reply_click_')[1];
 
@@ -173,23 +199,6 @@
 				$("#reply_click_" + clicked_id).click(function() { show_reply_form(clicked_id) });
 				$("#hide_reply_click_" + clicked_id).click(function() { hide_reply_form(clicked_id) });
 			});
-		}
-
-		// Function for showing sources
-		function show_sources() {
-
-			// Get sources div
-			var sources_div = $("#sources");
-			var sources_btn = $("#sources_click");
-
-			// If sources is hidden, show. Else, hide.
-			if (sources_div.is(":hidden")) {
-				sources_div.show();
-				sources_btn.val = "Hide Sources";
-		  	} else {
-				sources_div.hide();
-				sources_btn.val = "Show Sources";
-		  	}
 		}
 
 		// Function for showing reply forms
