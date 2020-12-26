@@ -167,11 +167,11 @@ def delete_user(user):
         # Delete all comments and replies first
         for comment in Comment.objects.filter(email=email):
             for reply in comment.replies.all():
-                reply.delete()
-            comment.delete()
+                reply.deactive()
+            comment.deactivate()
 
         for reply in Reply.objects.filter(email=email):
-            reply.delete()
+            reply.deactivate()
 
         # Deactivate user
         user.active = False
