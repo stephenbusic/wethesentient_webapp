@@ -11,6 +11,8 @@
 	</header>
 	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
+
+		{% if agpost.has_sources %}
 		<div class="align-center">
 			<input value="Show Sources" type="button" id="sources_click">
 		</div>
@@ -18,6 +20,7 @@
 			<hr>
 			{{ agpost.sources|safe }}
 		</div>
+		{% endif %}
 	</p>
 	<br clear="both"><header class="major"><span class="date">{{ agpost.date }}</span></header>
 
@@ -145,8 +148,7 @@
 
 <!-- Create JQuery for hiding and showing reply forms -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-
+{% if agpost.has_sources %}
 <script type="text/javascript">
 
 	$(document).ready(function() {
@@ -174,6 +176,7 @@
 		sources_btn.blur();
 	}
 </script>
+{% endif %}
 
 {% if user.is_authenticated %}
 {% if perms.posts.add_comment %}

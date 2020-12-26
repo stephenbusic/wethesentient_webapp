@@ -20,6 +20,7 @@ class AGPost(models.Model):
     desc = RichTextField(max_length=750)
     slug = models.SlugField(max_length=160, editable=False)
     body = RichTextUploadingField()
+    has_sources = models.BooleanField(default=True)
     sources = RichTextUploadingField()
     type = models.CharField(max_length=160)
     date = models.DateField(auto_now_add=True)
