@@ -1,44 +1,52 @@
 # Django settings file
 import os
 from . import config
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+# Build base DIR
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# Django's Secret Key
 SECRET_KEY = config.secret_key
 
 # Key for encryption
 ENCRYPT_KEY = config.encrypt_key['key']
 
-RECAPTCHA_SITE_KEY = config.reCAPTCHA['site_key']
-RECAPTCHA_SECRET_KEY = config.reCAPTCHA['secret_key']
+# Recaptcha Secret Key
+if not DEBUG:
+    # Keys for Production
+    RECAPTCHA_SITE_KEY = config.reCAPTCHA['site_key']
+    RECAPTCHA_SECRET_KEY = config.reCAPTCHA['secret_key']
+else:
+    # Keys for Local Testing
+    RECAPTCHA_SITE_KEY = config.reCAPTCHA_LOCALTESTING['site_key']
+    RECAPTCHA_SECRET_KEY = config.reCAPTCHA_LOCALTESTING['secret_key']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
+# Security settings
 SECURE_BROWSER_XSS_FILTER = True
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'Strict'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_REFERRER_POLICY = 'same-origin'
 
+# Apply these security settings only if DEBUG
+# is false, since they break the site locally
 if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = 'Strict'
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
-
     SECURE_HSTS_SECONDS = 30
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
     ALLOWED_HOSTS = ['www.aaahhhghosts.com']
-
 else:
-    ALLOWED_HOSTS = ['www.aaahhhghosts.com', '127.0.0.1']
+    ALLOWED_HOSTS = ['127.0.0.1']
 
 
-#Email
+# Email Settings
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
@@ -47,7 +55,6 @@ EMAIL_HOST_PASSWORD = config.gmail['pword']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -110,17 +117,8 @@ AUTHENTICATION_BACKENDS = [
 WSGI_APPLICATION = 'agwebsite.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-
-else:
+# Use MySql if in Production
+if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -138,8 +136,16 @@ else:
         }
     }
 
+# Else if testing locally, use SQLite
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
 # Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -200,22 +206,14 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
@@ -245,6 +243,7 @@ CKEDITOR_CONFIGS = {
     'extraPlugins': ','.join(['tab','justify','liststyle','indent','uploadimage']),
     'tabSpaces': 4,
 }
+
 
 # --- Django Analytical Settings ---
 CLICKY_SITE_ID = config.analytical['clicky_ID']
