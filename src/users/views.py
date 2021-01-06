@@ -1,10 +1,8 @@
 from django.contrib.auth.models import User
 from posts.models import AGPost, Comment, Reply
 from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect
-from django.contrib.auth import login, logout
-from .forms import CreatePassword, LoginUser, SendPasswordReset
 from . import user_email_utility
 from .encryption_utility import *
 from datetime import date
@@ -164,7 +162,7 @@ def delete_user(user):
     username = str(user.username)
     email = str(user.email)
     try:
-        # Delete all comments and replies first
+        # Deactivate all comments and replies first
         for comment in Comment.objects.filter(email=email):
             for reply in comment.replies.all():
                 reply.deactive()
@@ -174,10 +172,10 @@ def delete_user(user):
             reply.deactivate()
 
         # Deactivate user
-        user.active = False
-        user.delete()
+        user.activate = False
+
     except Exception as e:
-        logging.getLogger("error").error("There was an exception will deleting user ", username)
+        logging.getLogger("error").error("There was an exception while deleting user ", username, e)
         return False
 
     logging.getLogger("DEBUG").debug("User ", username, " deleted.")

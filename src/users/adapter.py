@@ -1,8 +1,6 @@
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.account.models import EmailAddress
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 
 
 class NoNewUsersAccountAdapter(DefaultAccountAdapter):
@@ -20,6 +18,7 @@ class NoNewUsersAccountAdapter(DefaultAccountAdapter):
         regular flow by raising an ImmediateHttpResponse
         """
         return False
+
 
 class YesNewUsersSocialAccountAdapter(DefaultSocialAccountAdapter):
     """
@@ -39,10 +38,13 @@ class YesNewUsersSocialAccountAdapter(DefaultSocialAccountAdapter):
 
     def pre_social_login(self, request, sociallogin):
 
-        print("checking if email already exists")
-        print("email:", sociallogin.account.extra_data['email'])
-        # social account already exists, so this is just a login
+        # social account already exists, so this is just a login.
+        # Or could be previously deleted user returning, in which
+        # case reactivate them.
         if sociallogin.is_existing:
+            user = sociallogin.user
+            if user.activate == False:
+                user.activate = True
             return
 
         # some social logins don't have an email address
@@ -61,12 +63,16 @@ class YesNewUsersSocialAccountAdapter(DefaultSocialAccountAdapter):
             return
 
         # check if given email address already exists as a verified email on
-        # an existing user's account
+        # an existing user's account. Return if not.
         try:
-            existing_email = EmailAddress.objects.get(email__iexact=email.email, verified=True)
+            email = verified_email.lower()
+            existing_email = EmailAddress.objects.get(email__iexact=email)
+
         except EmailAddress.DoesNotExist:
             return
 
-        print("email does exist! connecting social account to exisint account")
-        # if it does, connect this new social login to the existing user
-        sociallogin.connect(request, existing_email.user)
+        # Get the existing social account user
+        sameUser_OtherSocialAccount = existing_email.user
+
+        # Connect this new social login to the existing user
+        sociallogin.connect(request, sameUser_OtherSocialAccount)

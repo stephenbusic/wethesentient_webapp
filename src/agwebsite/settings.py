@@ -24,11 +24,13 @@ else:
     RECAPTCHA_SITE_KEY = config.reCAPTCHA_LOCALTESTING['site_key']
     RECAPTCHA_SECRET_KEY = config.reCAPTCHA_LOCALTESTING['secret_key']
 
+
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_REFERRER_POLICY = 'same-origin'
+
 
 # Apply these security settings only if DEBUG
 # is false, since they break the site locally
@@ -145,6 +147,7 @@ else:
         }
     }
 
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -205,6 +208,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 }
 
+
 # Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -220,6 +224,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 VENV_PATH = os.path.dirname(BASE_DIR)
 STATIC_ROOT = os.path.join(VENV_PATH, 'static_root')
 MEDIA_ROOT = os.path.join(VENV_PATH, 'media_root')
+
 
 # --- CKeditor Settings ---
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
