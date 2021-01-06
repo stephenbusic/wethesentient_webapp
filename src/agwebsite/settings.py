@@ -204,6 +204,9 @@ SOCIALACCOUNT_PROVIDERS = {
             'profile',
             'email',
         ],
+        'AUTH_PARAMS': {
+            'include_email': True,
+        }
     },
 
 }
