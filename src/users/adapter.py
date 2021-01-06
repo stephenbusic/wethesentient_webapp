@@ -67,7 +67,7 @@ class YesNewUsersSocialAccountAdapter(DefaultSocialAccountAdapter):
         # an existing user's account. Return if not.
         try:
             print(EmailAddress.objects.all())
-            email = verified_email.lower()
+            email = sociallogin.account.extra_data['email'].lower()
             existing_email = EmailAddress.objects.get(email__iexact=email)
 
         except EmailAddress.DoesNotExist:
