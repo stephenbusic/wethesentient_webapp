@@ -37,8 +37,6 @@ class YesNewUsersSocialAccountAdapter(DefaultSocialAccountAdapter):
 
     def pre_social_login(self, request, sociallogin):
 
-        print("checking if email already exists sss")
-        print("email:", sociallogin.account.extra_data['email'])
         # social account already exists, so this is just a login.
         # Or could be previously deleted user returning, in which
         # case reactivate them.
@@ -66,7 +64,6 @@ class YesNewUsersSocialAccountAdapter(DefaultSocialAccountAdapter):
         # check if given email address already exists as a verified email on
         # an existing user's account. Return if not.
         try:
-            print(EmailAddress.objects.all())
             email = sociallogin.account.extra_data['email'].lower()
             existing_email = EmailAddress.objects.get(email__iexact=email)
 

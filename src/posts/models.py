@@ -95,11 +95,22 @@ class Comment(models.Model):
 
     # Updated pin status on each save
     def save(self, *args, **kwargs):
+
         if self.rank < 10:
             self.pinned = True
         else:
             self.pinned = False
         super(Comment, self).save()
+
+
+# Create receiver to listen for when new posts are created.
+@receiver(post_save, sender=Comment)
+def announce_post(sender, **kwargs):
+    if kwargs['created']:
+        comment = kwargs.get('instance')
+
+        # Email me when new comment is created.
+        # send_scuub_new_comment_email(comment)
 
 
 # Model for reach reply on a comments
@@ -134,3 +145,13 @@ class Reply(models.Model):
         else:
             self.pinned = False
         super(Reply, self).save()
+
+
+# Create receiver to listen for when new posts are created.
+@receiver(post_save, sender=Reply)
+def announce_post(sender, **kwargs):
+    if kwargs['created']:
+        reply = kwargs.get('instance')
+
+        # Email me when new reply is created.
+        # send_scuub_new_reply_email(reply)
