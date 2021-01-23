@@ -2691,13 +2691,13 @@ input, select, textarea {
 
 		.image.left {
 			float: left;
-			margin: -0.1em 0 0.5rem 1.5rem
+			margin: -0.1em 0 0.5rem 1.5rem;
 			top: 0.75rem;
 		}
 
 		.image.right {
 			float: right;
-			margin: -0.1em 0 0.5rem 1.5rem
+			margin: -0.1em 0 0.5rem 1.5rem;
 			top: 0.75rem;
 		}
 
