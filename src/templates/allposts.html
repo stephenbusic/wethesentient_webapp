@@ -10,9 +10,9 @@
         </select>
     </div> -->
 
-	{% if all_agposts.count > 0 %}
+	{% if active_agposts.object_list.count > 0 %}
 		<section class="posts">
-			{% for agpost in all_agposts %}
+			{% for agpost in active_agposts %}
 				<article>
 					<header>
 						<h2>{{ agpost.title }}</h2>
@@ -33,17 +33,28 @@
 	<br>
 
 	<!-- Footer w/ Page Nav -->
-	<!-- <footer>
-        <div class="pagination">
-            <a href="#" class="previous">Prev</a>
-            <a href="#" class="page active">1</a>
-            <a href="#" class="page">2</a>
-            <a href="#" class="page">3</a>
-            <span class="extra">&hellip;</span>
-            <a href="#" class="page">8</a>
-            <a href="#" class="page">9</a>
-            <a href="#" class="page">10</a>
-            <a href="#" class="next">Next</a>
-        </div>
-    </footer> -->
+	<footer>
+		<!-- Footer w/ Page Nav -->
+		<div class="paginator">
+
+			<h5 class="current">Page {{ active_agposts.number }} of {{ active_agposts.paginator.num_pages }}</h5>
+			<br>
+			<span class="step-links">
+				{% if active_agposts.has_previous %}
+					<!--a href="1">&laquo; first</a-->
+					<a class="button" href="{{ active_agposts.previous_page_number }}">prev</a>
+				{% else %}
+					<input type="button" value="prev" disabled="true"/>
+				{% endif %}
+
+				{% if active_agposts.has_next %}
+					<a class="button" href="{{ active_agposts.next_page_number }}">next</a>
+					<!--a href="{{ active_agposts.paginator.num_pages }}">last &raquo;</a-->
+				{% else %}
+					<input type="button" value="next" disabled="true"/>
+				{% endif %}
+			</span>
+		</div>
+		<br>
+    </footer>
 {% endblock content %}

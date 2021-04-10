@@ -9,7 +9,7 @@
 	<ul class="links">
 		{% with url_name=request.resolver_match.url_name %}
 		<li class ="{% if url_name == 'show_homepage' %}active{% endif %}"><a href="{% url 'homepage:show_homepage' %}">Homepage</a></li>
-		<li class ="{% if url_name == 'show_all_posts' %}active{% endif %}"><a href="{% url 'posts:show_all_posts' %}">All Posts</a></li>
+		<li class ="{% if url_name == 'show_all_posts' %}active{% endif %}"><a href="{% url 'posts:show_all_posts' 1 %}">All Posts</a></li>
 		<li class ="{% if url_name == 'show_follow' %}active{% endif %}"><a href="{% url 'follow:request_sub' %}">Follow</a></li>
 		{% endwith %}
 	</ul>

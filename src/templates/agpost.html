@@ -8,6 +8,7 @@
 	<header class="major">
 		<h1>{{ agpost.title }}</h1>
 		<h4 class="lighten">By {{ agpost.author|safe }}</h4>
+		{% if agpost.active is False %}<h4>Unlisted Article</h4>{% endif %}
 	</header>
 	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 		{{ agpost.body|safe }}
@@ -71,33 +72,63 @@
 				{% if comment.active %}
 					<div class="col-12">
 						<div class="row aln-middle">
-							<h4>{{ comment.name }}</h4>
+							<h4>{{ comment.username }}</h4>
 							<div class="lighten">{{ comment.created_on }}</div>
 							{% if comment.pinned %}<div class="lighten">[Pinned]</div>{% endif %}
+							{% if comment.edited %}<div class="lighten">[Edited]</div>{% endif %}
 						</div>
 						<div class="reply_body">
 							{{ comment.body }}
 						</div>
-						<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.counter0 }}_0">Reply</a></div>
+						{% if user.is_authenticated %}
+							{% if user.get_username|lower == comment.username|lower and user.email|lower == comment.email|lower %}
+								<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.counter0 }}_0">Edit</a></div>
+							{% else %}
+								<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.counter0 }}_0">Reply</a></div>
+							{% endif %}
+						{% endif %}
 					</div>
 
+					<!-- If user is logged in -->
 					{% if user.is_authenticated %}
-						{% if perms.posts.add_reply %}
+
+						<!-- If user is author of comment, Display edit form -->
+						{% if user.get_username|lower == comment.username|lower and user.email|lower == comment.email|lower %}
+
 							<!-- Show reply form on click -->
 							<form method="post" class="reply_form" id="reply_form_{{ forloop.counter0 }}_0">
 								{% csrf_token %}
-								<h4>Write your reply:</h4>
+								<h4>Edit your Comment:</h4>
 								<div class="bottom pad">
-
-									<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.counter0 }}_0"></textarea>
+									<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.counter0 }}_0">{{ comment.body }}</textarea>
 								</div>
 								<ul class="actions">
-									<li><input type="submit" value="Post"></li>
+									<li><input type="submit" value="Save Changes"></li>
 									<li><input type="button" id="hide_reply_click_{{ forloop.counter0 }}_0" value="Cancel" class="primary"></li>
 								</ul>
 								<input type="hidden" name="g-recaptcha-response" id="recaptcha_{{ forloop.counter0 }}_0">
-								<input type="hidden" name="create_reply" value="{{ forloop.counter0 }}_0">
+								<input type="hidden" name="edit_comment" value="{{ forloop.counter0 }}_0">
 							</form>
+
+						<!-- Else, user is not the author of comment. Display reply form -->
+						{% else %}
+
+							{% if perms.posts.add_reply %}
+								<!-- Show reply form on click -->
+								<form method="post" class="reply_form" id="reply_form_{{ forloop.counter0 }}_0">
+									{% csrf_token %}
+									<h4>Write a reply:</h4>
+									<div class="bottom pad">
+										<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.counter0 }}_0"></textarea>
+									</div>
+									<ul class="actions">
+										<li><input type="submit" value="Post"></li>
+										<li><input type="button" id="hide_reply_click_{{ forloop.counter0 }}_0" value="Cancel" class="primary"></li>
+									</ul>
+									<input type="hidden" name="g-recaptcha-response" id="recaptcha_{{ forloop.counter0 }}_0">
+									<input type="hidden" name="create_reply" value="{{ forloop.counter0 }}_0">
+								</form>
+							{% endif %}
 						{% endif %}
 					{% endif %}
 
@@ -110,32 +141,59 @@
 								<div class="bottom pad reply">
 									<div class="col-12">
 										<div class="row aln-middle">
-											<h4>{{ reply.name }}</h4>
+											<h4>{{ reply.username }}</h4>
 											<div class="lighten">{{ reply.created_on }}</div>
 											{% if reply.pinned %}<div class="lighten">[Pinned]</div>{% endif %}
+											{% if reply.edited %}<div class="lighten">[Edited]</div>{% endif %}
 										</div>
 										<div class="reply_body">
 											{% if reply.handle %}<div class="reply_handle">{{ reply.handle }}</div>{% endif %}
 											{{ reply.body }}
 										</div>
 									</div>
-									<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">Reply</a></div>
+									{% if user.is_authenticated %}
+										{% if user.get_username|lower == reply.username|lower and user.email|lower == reply.email|lower %}
+											<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">Edit</a></div>
+										{% else %}
+											<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">Reply</a></div>
+										{% endif %}
+									{% endif %}
 								</div>
 
 								<!-- Show comment reply's reply form on click -->
+
+								<!-- If user is author of comment, Display edit form -->
+								{% if user.get_username|lower == reply.username|lower and user.email|lower == reply.email|lower %}
 								<form method="post" class="reply_form" id="reply_form_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
 									{% csrf_token %}
-									<h4>Write your reply:</h4>
+									<h4>Edit your Reply:</h4>
 									<div class="bottom pad">
-										<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}"></textarea>
+										<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">{{ reply.body }}</textarea>
 									</div>
 									<ul class="actions">
-										<li><input type="submit" value="Post"></li>
+										<li><input type="submit" value="Save Changes"></li>
 										<li><input type="button" id="hide_reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}" value="Cancel" class="primary"></li>
 									</ul>
 									<input type="hidden" name="g-recaptcha-response" id="recaptcha_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
-									<input type="hidden" name="create_reply" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
+									<input type="hidden" name="edit_reply" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
 								</form>
+
+								<!-- Else, user is not the author of comment. Display reply form -->
+								{% else %}
+									<form method="post" class="reply_form" id="reply_form_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
+										{% csrf_token %}
+										<h4>Write a reply:</h4>
+										<div class="bottom pad">
+											<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}"></textarea>
+										</div>
+										<ul class="actions">
+											<li><input type="submit" value="Post"></li>
+											<li><input type="button" id="hide_reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}" value="Cancel" class="primary"></li>
+										</ul>
+										<input type="hidden" name="g-recaptcha-response" id="recaptcha_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
+										<input type="hidden" name="create_reply" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
+									</form>
+								{% endif %}
 							{% endif %}
 						{% endfor %}
 					{% endif %}

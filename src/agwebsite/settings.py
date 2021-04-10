@@ -3,7 +3,7 @@ import os
 from . import config
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Build base DIR
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,15 +15,8 @@ SECRET_KEY = config.secret_key
 ENCRYPT_KEY = config.encrypt_key['key']
 
 # Recaptcha Secret Key
-if not DEBUG:
-    # Keys for Production
-    RECAPTCHA_SITE_KEY = config.reCAPTCHA['site_key']
-    RECAPTCHA_SECRET_KEY = config.reCAPTCHA['secret_key']
-else:
-    # Keys for Local Testing
-    RECAPTCHA_SITE_KEY = config.reCAPTCHA_LOCALTESTING['site_key']
-    RECAPTCHA_SECRET_KEY = config.reCAPTCHA_LOCALTESTING['secret_key']
-
+RECAPTCHA_SITE_KEY = config.reCAPTCHA['site_key']
+RECAPTCHA_SECRET_KEY = config.reCAPTCHA['secret_key']
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True

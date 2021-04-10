@@ -21,12 +21,13 @@ class AGPost(models.Model):
     desc = RichTextField(max_length=750)
     body = RichTextUploadingField()
     has_sources = models.BooleanField(default=True)
-    sources = RichTextUploadingField()
+    sources = RichTextUploadingField(blank=True)
     type = models.CharField(max_length=160)
     date = models.DateField(auto_now_add=True)
     thumb = models.ImageField(upload_to=generate_imagepath, default='default_thumb.jpg', blank=True)
     square_thumb = models.ImageField(upload_to=generate_imagepath, default='default_square_thumb.jpg', blank=True)
     email_subs = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['-date']
@@ -38,7 +39,7 @@ class AGPost(models.Model):
     # Auto generate post details
     def save(self, *args, **kwargs):
 
-        #If saving for the first time
+        # If saving for the first time
         if self._state.adding:
 
             # Generate unique slug for post url
@@ -72,7 +73,7 @@ def announce_post(sender, **kwargs):
 # Model for each comment on a post
 class Comment(models.Model):
     agpost = models.ForeignKey(AGPost, on_delete=models.CASCADE, related_name='comments')
-    name = models.CharField(max_length=80)
+    username = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField(max_length=4000)
     created_on = models.DateTimeField(auto_now_add=True)
@@ -80,6 +81,7 @@ class Comment(models.Model):
     notify = models.BooleanField(default=False)
     rank = models.IntegerField(default=10)
     pinned = models.BooleanField(default=False)
+    edited = models.BooleanField(default=False)
 
 
     class Meta:
@@ -91,7 +93,7 @@ class Comment(models.Model):
         if len(preview) > 25:
             preview = preview[0:25] + "..."
 
-        return '{} by {} on: {}'.format(preview, self.name, self.agpost.title)
+        return '{} by {} on: {}'.format(preview, self.username, self.agpost.title)
 
     # Updated pin status on each save
     def save(self, *args, **kwargs):
@@ -116,7 +118,7 @@ def announce_post(sender, **kwargs):
 # Model for reach reply on a comments
 class Reply(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')
-    name = models.CharField(max_length=80)
+    username = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField(max_length=4000)
     handle = models.CharField(max_length=90, default="", blank=True)
@@ -125,6 +127,7 @@ class Reply(models.Model):
     notify = models.BooleanField(default=True)
     rank = models.IntegerField(default=10)
     pinned = models.BooleanField(default=False)
+    edited = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['rank', 'created_on']
@@ -136,7 +139,7 @@ class Reply(models.Model):
         if len(preview) > 25:
             preview = preview[0:25] + "..."
 
-        return '{} by {} on: {}\'s comment on {}'.format(preview, self.name, self.comment.name, self.comment.agpost.title)
+        return '{} by {} on: {}\'s comment on {}'.format(preview, self.username, self.comment.username, self.comment.agpost.title)
 
     # Updated pin status on each save
     def save(self, *args, **kwargs):
