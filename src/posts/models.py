@@ -83,9 +83,8 @@ class Comment(models.Model):
     pinned = models.BooleanField(default=False)
     edited = models.BooleanField(default=False)
 
-
     class Meta:
-        ordering = ['rank', '-created_on']
+        ordering = ['agpost']
 
     def __str__(self):
 
@@ -103,6 +102,12 @@ class Comment(models.Model):
         else:
             self.pinned = False
         super(Comment, self).save()
+
+    # Method for determining if given user is
+    # the author of the comment
+    def is_author(self, user):
+        return user.get_username().lower() == self.username.lower() and \
+               user.email.lower() == self.email.lower()
 
 
 # Create receiver to listen for when new posts are created.
@@ -130,7 +135,7 @@ class Reply(models.Model):
     edited = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['rank', 'created_on']
+        ordering = ['comment', 'rank', 'created_on']
         verbose_name_plural = "Replies"
 
     def __str__(self):
@@ -139,7 +144,8 @@ class Reply(models.Model):
         if len(preview) > 25:
             preview = preview[0:25] + "..."
 
-        return '{} by {} on: {}\'s comment on {}'.format(preview, self.username, self.comment.username, self.comment.agpost.title)
+        return '{} by {} on: {}\'s comment on {}'.format(preview, self.username, self.comment.username,
+                                                         self.comment.agpost.title)
 
     # Updated pin status on each save
     def save(self, *args, **kwargs):
@@ -148,6 +154,12 @@ class Reply(models.Model):
         else:
             self.pinned = False
         super(Reply, self).save()
+
+    # Method for determining if given user is
+    # the author of the comment
+    def is_author(self, user):
+        return user.get_username().lower() == self.username.lower() and \
+               user.email.lower() == self.email.lower()
 
 
 # Create receiver to listen for when new posts are created.

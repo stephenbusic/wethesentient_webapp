@@ -1,0 +1,94 @@
+				<!-- Set up variables -->
+                {% with user_logged_in=user.is_authenticated %}
+                {% load is_author_tags %}
+				{% is_comment_author comment user as user_is_comment_author %}
+
+					<!-- Div for comment -->
+					<div class="col-12">
+						<!-- Header with comment's author and tags -->
+						<div class="row aln-middle">
+							<h4>{{ comment.username }}</h4>
+							<div class="lighten">{{ comment.created_on }}</div>
+							{% if comment.pinned %}<div class="lighten">[Pinned]</div>{% endif %}
+							{% if comment.edited %}<div class="lighten">[Edited]</div>{% endif %}
+						</div>
+						<!-- Comment body -->
+						<div class="reply_body">
+							{{ comment.body }}
+						</div>
+						{% if user_logged_in %}
+							<!-- If logged in user is author, add EDIT button.
+								 Else, if logged in user is not author, add reply button -->
+							<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ comment_num }}_0">
+								{% if user_is_comment_author %} Edit {% else %} Reply {% endif %}
+							</a></div>
+						{% endif %}
+					</div>
+
+					{% if user_logged_in %}
+					<!-- If user is logged in -->
+						{% if user_is_comment_author %}
+						<!-- If user is author of comment, attach edit_form to comment -->
+							<!-- Show reply form on click -->
+							{% include 'forms/edit_form.html' with type="comment" action="edit_comment" reply_num=0 %}
+						{% else %}
+							{% if perms.posts.add_reply %}
+							<!-- If user is not the comment author, display reply form -->
+								<!-- Show reply form on click -->
+								{% include 'forms/reply_form.html' with action="create_reply" reply_num=0 %}
+							{% endif %}
+						{% endif %}
+					{% endif %}
+
+					{% if comment.replies.all %}
+						<!-- Show comment's replies -->
+						{% for reply in comment.replies.all %}
+							{% if reply.active %}
+
+							{% with reply_num=forloop.counter %}
+							{% is_reply_author reply user as user_is_reply_author %}
+
+								<!-- Show Reply -->
+								<div class="bottom pad reply">
+									<div class="col-12">
+										<div class="row aln-middle">
+											<h4>{{ reply.username }}</h4>
+											<div class="lighten">{{ reply.created_on }}</div>
+											{% if reply.pinned %}<div class="lighten">[Pinned]</div>{% endif %}
+											{% if reply.edited %}<div class="lighten">[Edited]</div>{% endif %}
+										</div>
+										<div class="reply_body">
+											{% if reply.handle %}<div class="reply_handle">{{ reply.handle }}</div>{% endif %}
+											{{ reply.body }}
+										</div>
+									</div>
+									{% if user_logged_in %}
+										<!-- If logged in user is author, add EDIT button.
+											 Else, if logged in user is not author, add reply button -->
+										<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ comment_num }}_{{ reply_num }}">
+											{% if user_is_reply_author %} Edit {% else %} Reply {% endif %}
+										</a></div>
+									{% endif %}
+								</div>
+
+								<!-- Show comment reply's reply form on click -->
+								{% if user_logged_in %}
+								<!-- If user is logged in -->
+									{% if user_is_reply_author %}
+									<!-- If user is author of comment, attach edit_form to comment -->
+										<!-- Show reply form on click -->
+										{% include 'forms/edit_form.html' with type="reply" action="edit_reply" body="{{ reply.body }}" %}
+									{% else %}
+										{% if perms.posts.add_reply %}
+										<!-- If user is not the comment author, display reply form -->
+											<!-- Show reply form on click -->
+											{% include 'forms/reply_form.html' with action="create_reply" %}
+										{% endif %}
+									{% endif %}
+								{% endif %}
+
+							{% endwith %}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				{% endwith %}

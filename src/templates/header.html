@@ -1,22 +1,22 @@
-{% load static %}
-<!-- Header -->
-<header id="header">
-	<div class="logo">AAAHHHghosts</div>
-</header>
+	{% load static %}
+	<!-- Header -->
+	<header id="header">
+		<div class="logo">AAAHHHghosts</div>
+	</header>
 
-<!-- Nav -->
-<nav id="nav">
-	<ul class="links">
-		{% with url_name=request.resolver_match.url_name %}
-		<li class ="{% if url_name == 'show_homepage' %}active{% endif %}"><a href="{% url 'homepage:show_homepage' %}">Homepage</a></li>
-		<li class ="{% if url_name == 'show_all_posts' %}active{% endif %}"><a href="{% url 'posts:show_all_posts' 1 %}">All Posts</a></li>
-		<li class ="{% if url_name == 'show_follow' %}active{% endif %}"><a href="{% url 'follow:request_sub' %}">Follow</a></li>
-		{% endwith %}
-	</ul>
-	<ul class="icons">
-		<li><a href="#" class="icon brands fa-spotify"><span class="label">Spotify</span></a></li>
-		<li><a href="https://www.instagram.com/_scuub_/" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-		<li><a href="https://www.youtube.com/channel/UC3aNu9ZpeurTrYUj2GwQpJg" class="icon brands fa-youtube"><span class="label">YouTube</span></a></li>
-		<li><a href="https://github.com/AAAHHHghosts" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-	</ul>
-</nav>
+	<!-- Nav -->
+	<nav id="nav">
+		<ul class="links">
+			{% with url_name=request.resolver_match.url_name %}
+			<li class ="{% if url_name == 'show_homepage' %}active{% endif %}"><a href="{% url 'homepage:show_homepage' %}">Homepage</a></li>
+			<li class ="{% if url_name == 'show_all_posts' %}active{% endif %}"><a href="{% url 'posts:show_all_posts' 1 %}">All Posts</a></li>
+			<li class ="{% if url_name == 'show_follow' %}active{% endif %}"><a href="{% url 'follow:request_sub' %}">Follow</a></li>
+			{% endwith %}
+		</ul>
+		<ul class="icons">
+			<li><a href="#" class="icon brands fa-spotify"><span class="label">Spotify</span></a></li>
+			<li><a href="https://www.instagram.com/_scuub_/" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+			<li><a href="https://www.youtube.com/channel/UC3aNu9ZpeurTrYUj2GwQpJg" class="icon brands fa-youtube"><span class="label">YouTube</span></a></li>
+			<li><a href="https://github.com/AAAHHHghosts" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+		</ul>
+	</nav>

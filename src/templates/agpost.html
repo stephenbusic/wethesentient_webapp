@@ -1,340 +1,71 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
+	{% extends 'base.html' %}
+	{% load static %}
+	{% block content %}
 
-<!-- Post -->
-<section class="post">
-	<br>
-	<header class="major">
-		<h1>{{ agpost.title }}</h1>
-		<h4 class="lighten">By {{ agpost.author|safe }}</h4>
-		{% if agpost.active is False %}<h4>Unlisted Article</h4>{% endif %}
-	</header>
-	<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
-		{{ agpost.body|safe }}
+	<!-- HTML for Blog Post -->
+	<section class="post">
 
-		{% if agpost.has_sources %}
-		<div class="align-center">
-			<input value="Show Sources" type="button" id="sources_click">
-		</div>
-		<div id="sources">
-			<hr>
-			{{ agpost.sources|safe }}
-		</div>
-		{% endif %}
-	</p>
-	<br clear="both"><header class="major"><span class="date">{{ agpost.date }}</span></header>
+		<!-- Display post title & author, as well as a message if the post
+			 is not public (unlisted) -->
+		<br>
+		<header class="major">
+			<h1>{{ agpost.title }}</h1>
+			<h4 class="lighten">By {{ agpost.author|safe }}</h4>
+			{% if agpost.active is False %}<h4>Unlisted Article</h4>{% endif %}
+		</header>
 
-	<!-- Comment Form -->
-	<h2>Leave a comment</h2>
-	<div class="row gtr-uniform">
-		<div class="col-12">
-			{% if user.is_authenticated %}
-				<div class="row aln-middle">
-					<h3><b class="lighten">Welcome, {{ user.get_username }}.</b></h3>
-					<h3><a class="lighten" href="{% url 'account_logout' %}?next={{request.path}}"><u>Logout</u></a></h3>
-				</div>
-				{% if perms.posts.add_comment %}
-				<form method="post" id="comment_form">
-					{% csrf_token %}
-					<div class="bottom pad">
-						{{ comment_form.body }}
-					</div>
-					<div class="bottom pad">
-						{{ comment_form.notify }}
-						<label for={{ comment_form.notify.id_for_label }}>Notify me if someone replies.</label>
-					</div>
-					<ul class="actions">
-						<li><input type="submit" value="Post"></li>
-					</ul>
-					<input type="hidden" name="g-recaptcha-response" id='recaptcha'>
-					<input type="hidden" name="create_comment" id="create_comment" value="created">
-				</form>
-				{% else %}
-					<p>You cannot comment or reply to comments because your privileges have been
-						revoked. Please reach me at <b>AAAHHHghosts@gmail.com</b> if you believe this
-						to be a mistake. Thank you!</p>
-				{% endif %}
-			{% else %}
-				<div class="row aln-middle">
-					<h3><b class="lighten">Want to comment or reply?</b></h3>
-					<h3><a class="lighten" href="{% url 'account_login' %}?next={{request.path}}"><u>Login</u></a></h3>
-				</div>
+		<!-- Display post image in right corner of text -->
+		<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
+
+			<!-- Display the main content of the post -->
+			{{ agpost.body|safe }}
+
+			<!-- Add a sources section if the post has citations -->
+			{% if agpost.has_sources %}
+			<div class="align-center">
+				<input value="Show Sources" type="button" id="sources_click">
+			</div>
+			<div id="sources">
+				<hr>
+				{{ agpost.sources|safe }}
+			</div>
+			{% endif %}
+		</p>
+
+		<!-- Add date the post was created to bottom of the post -->
+		<br clear="both"><header class="major"><span class="date">{{ agpost.date }}</span></header>
+
+		<!-- COMMENT SECTION -->
+		{% include 'forms/comment_form.html' with user_has_comment_perms=perms.posts.add_comment %}
+		<hr>
+		<!-- Display all active comments -->
+		<div id="comments">
+			{% if comments.all %}
+				{% for comment in comments.all %}
+					{% if comment.active %}
+						{% include 'comment.html' with comment_num=forloop.counter0 %}
+					{% endif %}
+					<br>
+				{% endfor %}
 			{% endif %}
 		</div>
-	</div>
-	<hr>
+	</section>
 
-	<!-- Show comments -->
-	<div id="comments">
-		{% if comments.all %}
-			{% for comment in comments.all %}
-				{% if comment.active %}
-					<div class="col-12">
-						<div class="row aln-middle">
-							<h4>{{ comment.username }}</h4>
-							<div class="lighten">{{ comment.created_on }}</div>
-							{% if comment.pinned %}<div class="lighten">[Pinned]</div>{% endif %}
-							{% if comment.edited %}<div class="lighten">[Edited]</div>{% endif %}
-						</div>
-						<div class="reply_body">
-							{{ comment.body }}
-						</div>
-						{% if user.is_authenticated %}
-							{% if user.get_username|lower == comment.username|lower and user.email|lower == comment.email|lower %}
-								<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.counter0 }}_0">Edit</a></div>
-							{% else %}
-								<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.counter0 }}_0">Reply</a></div>
-							{% endif %}
-						{% endif %}
-					</div>
+	<!-- Prepare to load scripts -->
+	{% load static %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-					<!-- If user is logged in -->
-					{% if user.is_authenticated %}
+	{% if agpost.has_sources %}
+		<!-- JQuery for hiding and showing agpost sources list -->
+		<script type="text/javascript" src="{% static 'js/agpost_sources.js' %}"></script>
+	{% endif %}
 
-						<!-- If user is author of comment, Display edit form -->
-						{% if user.get_username|lower == comment.username|lower and user.email|lower == comment.email|lower %}
-
-							<!-- Show reply form on click -->
-							<form method="post" class="reply_form" id="reply_form_{{ forloop.counter0 }}_0">
-								{% csrf_token %}
-								<h4>Edit your Comment:</h4>
-								<div class="bottom pad">
-									<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.counter0 }}_0">{{ comment.body }}</textarea>
-								</div>
-								<ul class="actions">
-									<li><input type="submit" value="Save Changes"></li>
-									<li><input type="button" id="hide_reply_click_{{ forloop.counter0 }}_0" value="Cancel" class="primary"></li>
-								</ul>
-								<input type="hidden" name="g-recaptcha-response" id="recaptcha_{{ forloop.counter0 }}_0">
-								<input type="hidden" name="edit_comment" value="{{ forloop.counter0 }}_0">
-							</form>
-
-						<!-- Else, user is not the author of comment. Display reply form -->
-						{% else %}
-
-							{% if perms.posts.add_reply %}
-								<!-- Show reply form on click -->
-								<form method="post" class="reply_form" id="reply_form_{{ forloop.counter0 }}_0">
-									{% csrf_token %}
-									<h4>Write a reply:</h4>
-									<div class="bottom pad">
-										<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.counter0 }}_0"></textarea>
-									</div>
-									<ul class="actions">
-										<li><input type="submit" value="Post"></li>
-										<li><input type="button" id="hide_reply_click_{{ forloop.counter0 }}_0" value="Cancel" class="primary"></li>
-									</ul>
-									<input type="hidden" name="g-recaptcha-response" id="recaptcha_{{ forloop.counter0 }}_0">
-									<input type="hidden" name="create_reply" value="{{ forloop.counter0 }}_0">
-								</form>
-							{% endif %}
-						{% endif %}
-					{% endif %}
-
-					{% if comment.replies.all %}
-						<!-- Show comment's replies -->
-						{% for reply in comment.replies.all %}
-							{% if reply.active %}
-
-								<!-- Show Reply -->
-								<div class="bottom pad reply">
-									<div class="col-12">
-										<div class="row aln-middle">
-											<h4>{{ reply.username }}</h4>
-											<div class="lighten">{{ reply.created_on }}</div>
-											{% if reply.pinned %}<div class="lighten">[Pinned]</div>{% endif %}
-											{% if reply.edited %}<div class="lighten">[Edited]</div>{% endif %}
-										</div>
-										<div class="reply_body">
-											{% if reply.handle %}<div class="reply_handle">{{ reply.handle }}</div>{% endif %}
-											{{ reply.body }}
-										</div>
-									</div>
-									{% if user.is_authenticated %}
-										{% if user.get_username|lower == reply.username|lower and user.email|lower == reply.email|lower %}
-											<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">Edit</a></div>
-										{% else %}
-											<div class="top pad"><a class="lighten reply_click" id="reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">Reply</a></div>
-										{% endif %}
-									{% endif %}
-								</div>
-
-								<!-- Show comment reply's reply form on click -->
-
-								<!-- If user is author of comment, Display edit form -->
-								{% if user.get_username|lower == reply.username|lower and user.email|lower == reply.email|lower %}
-								<form method="post" class="reply_form" id="reply_form_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
-									{% csrf_token %}
-									<h4>Edit your Reply:</h4>
-									<div class="bottom pad">
-										<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">{{ reply.body }}</textarea>
-									</div>
-									<ul class="actions">
-										<li><input type="submit" value="Save Changes"></li>
-										<li><input type="button" id="hide_reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}" value="Cancel" class="primary"></li>
-									</ul>
-									<input type="hidden" name="g-recaptcha-response" id="recaptcha_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
-									<input type="hidden" name="edit_reply" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
-								</form>
-
-								<!-- Else, user is not the author of comment. Display reply form -->
-								{% else %}
-									<form method="post" class="reply_form" id="reply_form_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
-										{% csrf_token %}
-										<h4>Write a reply:</h4>
-										<div class="bottom pad">
-											<textarea name="body" cols="40" rows="3" col="3" line-height="1.5" maxlength="4000" required="" id="id_body_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}"></textarea>
-										</div>
-										<ul class="actions">
-											<li><input type="submit" value="Post"></li>
-											<li><input type="button" id="hide_reply_click_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}" value="Cancel" class="primary"></li>
-										</ul>
-										<input type="hidden" name="g-recaptcha-response" id="recaptcha_{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
-										<input type="hidden" name="create_reply" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter }}">
-									</form>
-								{% endif %}
-							{% endif %}
-						{% endfor %}
-					{% endif %}
-				{% endif %}
-				<br>
-			{% endfor %}
-		{% endif %}
-	</div>
-</section>
-
-<!-- Create JQuery for hiding and showing reply forms -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-{% if agpost.has_sources %}
-<script type="text/javascript">
-
-	$(document).ready(function() {
-
-		//Add toggle "show sources" function to button
-		$("#sources_click").click(function() {	show_sources() });
-		$("#sources").hide();
-	});
-
-	// Function for showing sources
-	function show_sources() {
-
-		// Get sources div
-		var sources_div = $("#sources");
-		var sources_btn = $("#sources_click");
-
-		// If sources is hidden, show. Else, hide.
-		if (sources_div.is(":hidden")) {
-			sources_div.show();
-			sources_btn.val("Hide Sources");
-		} else {
-			sources_div.hide();
-			sources_btn.val("Show Sources");
-		}
-		sources_btn.blur();
-	}
-</script>
-{% endif %}
-
-{% if user.is_authenticated %}
-{% if perms.posts.add_comment %}
-{% if perms.posts.add_reply %}
-
-<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
-<script type="text/javascript">
-
-	$(document).ready(function() {
-
-		// Add event listeners once document is ready
-		addEvents();
-	});
-
-	function addEvents() {
-
-		const reply_buttons = document.querySelectorAll('.reply_click');
-		reply_buttons.forEach(function(currentBtn){
-
-			// Get clicked id for each reply_click button in page
-			var clicked_id = currentBtn.id.split('reply_click_')[1];
-
-			// Add show and hide events to their cooresponding buttons
-			$("#reply_click_" + clicked_id).click(function() { show_reply_form(clicked_id) });
-			$("#hide_reply_click_" + clicked_id).click(function() { hide_reply_form(clicked_id) });
-		});
-	}
-
-	// Function for showing reply forms
-	function show_reply_form(clicked_id) {
-
-		// Get and show current reply form
-		var current_form = $("#reply_form_" + clicked_id);
-		current_form.show();
-
-		// Hide all other reply forms
-		const reply_buttons = document.querySelectorAll('.reply_form');
-		reply_buttons.forEach(function(currentBtn){
-
-			// Get clicked id for each reply form button in page
-			var checked_id = currentBtn.id.split('reply_form_')[1];
-
-			if (checked_id !== clicked_id) {
-				var other_form = $("#reply_form_" + checked_id);
-				other_form.hide();
-			}
-		});
-	}
-
-	// Function for hiding reply forms
-	function hide_reply_form(clicked_id) {
-
-		// Hide current reply form
-		var current_form = $("#reply_form_" + clicked_id);
-		current_form.hide();
-	}
-
-
-	// When reCaptcha v3 is ready, add verifications to each form submit button
-	grecaptcha.ready(function() {
-
-		// Add reCaptcha Verficiation to the static comment form
-		$("#comment_form").submit(function(e) {
-			var form = this;
-
-			e.preventDefault();
-			grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
-
-				// Add token to hidden recaptcha input field
-				document.getElementById("recaptcha").value = token;
-				form.disabled = true;
-				form.submit();
-				form.reset();
-			});
-		});
-
-
-		// Add reCaptcha Verficiation to each of the reply forms
-		const reply_forms = document.querySelectorAll('.reply_form');
-		reply_forms.forEach(function(currentBtn){
-
-			// Get clicked id for each reply_form in page
-			var clicked_id = currentBtn.id.split('reply_form_')[1];
-			$("#reply_form_" + clicked_id).submit(function(e){
-				var form = this;
-
-				e.preventDefault();
-				grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
-
-					// Add token to hidden recaptcha input field
-					document.getElementById("recaptcha_" + clicked_id).value = token;
-					form.disabled = true;
-					form.submit();
-					form.reset();
-				});
-			});
-		});
-	});
-</script>
-{% endif %}
-{% endif %}
-{% endif %}
-{% endblock content %}
+	{% if user.is_authenticated and perms.posts.add_comment %}
+		<!-- JS scripts for hiding and showing reply forms -->
+		<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+		<script type="text/javascript">
+			var site_key="{{ site_key }}"
+		</script>
+		<script type="text/javascript" src="{% static 'js/comment_section.js' %}"></script>
+	{% endif %}
+	{% endblock content %}

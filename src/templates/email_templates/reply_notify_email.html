@@ -3,12 +3,13 @@
 <div style="padding: 20px; background: #fafafa;font-size:15px;">
     Hey {{ first_name }},<br>
     <br>
-    User "{{ replier_name }}" replied to your comment. Here's what they said:<br>
+    {{ replier_name }} replied to your comment. Here's what they said:<br>
     <br>
-    <p>"{{ body }}"</p>
+    <p>{{ body }}</p>
     <br>
     To respond, visit the comment section for the post "{{ agpost_title }}":<br>
     <a href="{{ post_url }}">{{ post_url }}</a>.<br>
+    <br>
     <br>
     <div class="footer">
         Don't want to be notified about future replies to this comment? Here's a link for that: <a href="{{ unnotify_url }}">{{ unnotify_url }}</a>

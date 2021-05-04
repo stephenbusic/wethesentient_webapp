@@ -41,8 +41,8 @@ def send_commenter_reply_notice(reply):
     post_url = urljoin(absolute_path, reverse('posts:show', kwargs={'slug': agpost.slug}))
 
     data = dict()
-    data["first_name"] = parent_comment.name.split(' ')[0]
-    data["replier_name"] = reply.name
+    data["first_name"] = parent_comment.username.split(' ')[0]
+    data["replier_name"] = reply.username
     data["agpost_title"] = agpost.title
     data["body"] = reply.body
     data["post_url"] = post_url
@@ -56,12 +56,13 @@ def send_commenter_reply_notice(reply):
     return send_email(email, subject, html_content, text_content)
 
 
-def send_replier_reply_notice(reply, parent_reply):
+def send_replier_reply_notice(parent_reply, reply):
 
     domain = Site.objects.get_current().domain
     absolute_path = 'https://www.' + str(format(domain))
 
     email = parent_reply.email
+    print("email: " + str(email))
     trun_date = str(parent_reply.created_on)[11:26]
     agpost = reply.comment.agpost
 
@@ -73,8 +74,8 @@ def send_replier_reply_notice(reply, parent_reply):
     post_url = urljoin(absolute_path, reverse('posts:show', kwargs={'slug': agpost.slug}))
 
     data = dict()
-    data["first_name"] = parent_reply.name.split(' ')[0]
-    data["replier_name"] = reply.name
+    data["first_name"] = parent_reply.username.split(' ')[0]
+    data["replier_name"] = reply.username
     data["agpost_title"] = agpost.title
     data["body"] = reply.body
     data["post_url"] = post_url
