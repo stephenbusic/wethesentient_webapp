@@ -1,3 +1,5 @@
+import logging
+
 from django.template.loader import get_template
 from django.utils.html import strip_tags
 from django.core.management.base import BaseCommand, CommandError
@@ -53,6 +55,7 @@ class Command(BaseCommand):
         was_sent = send_email(scuubs_email, subject, html_content, text_content)
 
         if was_sent:
-            self.stdout.write(self.style.SUCCESS('Report sent'))
+            logging.getLogger("DEBUG").debug('Daily report sent')
+            self.stdout.write(self.style.SUCCESS('Daily report sent'))
         else:
             raise CommandError('Failed sending report')

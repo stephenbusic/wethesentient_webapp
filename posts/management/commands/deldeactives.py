@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -35,5 +36,7 @@ class Command(BaseCommand):
             if time_since_last_login.days > days_to_live:
                 user.delete()
                 del_count += 1
+
+        logging.getLogger("DEBUG").debug('RAN DELDEACTIVES: Deleted %s inactive objects' % del_count)
 
         self.stdout.write(self.style.SUCCESS('Deleted %s inactive objects' % del_count))

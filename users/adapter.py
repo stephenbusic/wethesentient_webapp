@@ -107,7 +107,10 @@ class CustomSocialSignupForm(SignupForm):
 
         # Ensure full name is unique
         counter = 1
-        username = full_name.replace(' ', '_').lower()
+        raw_username = full_name.replace(' ', '_').lower()
+        username = ''
+        username.join(e for e in raw_username if (e.isalnum() or e == '_'))
+
         while User.objects.filter(first_name__iexact=username):
             user.first_name = full_name + str(counter)
             counter += 1

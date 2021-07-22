@@ -99,13 +99,11 @@ def sub_confirmation(request):
         token = token.split("-")
         sub_email = token[0]
 
-        # Get the number of days since link was created
+        # Get date the link was created
         link_date = int(token[1])
-        today_date = int(timezone.now().today().strftime("%Y%m%d"))
-        delta = today_date - link_date
 
-        # If link is 2 or less days old, trust it and sub
-        if 0 <= delta <= 2:
+        # If link has not timed out, trust it and unsub
+        if hasnt_timed_out(link_date, 2):
 
             # If subscriber with email does not already exist, create account
             if not Subscriber.objects.filter(email=sub_email):
@@ -114,7 +112,7 @@ def sub_confirmation(request):
                 msg = "Subscription confirmed. Thank you for following my blog!"
                 return render(request, 'msgpage.html', {'msg': msg})
 
-           # If subscriber does already exists, inform user and drop account
+            # If subscriber does already exists, inform user and drop account
             else:
                 msg = "Email is already subscribed!"
                 foot = "If you are trying to unsubscribe, look for a unsubscription link at the bottom of any of my emails."
@@ -143,13 +141,11 @@ def unsub_confirmation(request):
         token = token.split("-")
         email = token[0]
 
-        # Get the number of days since link was created
+        # Get date the link was created
         link_date = int(token[1])
-        today_date = int(timezone.now().today().strftime("%Y%m%d"))
-        delta = today_date - link_date
 
-        # If link is 2 or less days old, trust it and unsub
-        if 0 <= delta <= 2:
+        # If link has not timed out, trust it and unsub
+        if hasnt_timed_out(link_date, 7):
 
             sub = Subscriber.objects.get(email=email)
             sub.delete()
@@ -158,3 +154,11 @@ def unsub_confirmation(request):
 
     msg = "Link Invalid or Timed Out"
     return render(request, 'msgpage.html', {'msg': msg})
+
+
+# Method to determine if link has timed out
+def hasnt_timed_out(link_date, max_age):
+    today_date = int(timezone.now().today().strftime("%Y%m%d"))
+    delta = today_date - link_date
+    return 0 <= delta <= max_age
+

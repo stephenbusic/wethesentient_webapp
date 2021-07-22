@@ -1,11 +1,11 @@
 from django.template.loader import get_template
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.contrib.sites.models import Site
 from .models import Subscriber
 from django.urls import reverse
 from urllib.parse import urljoin
 from .encryption_utility import encrypt
-from random import randint
 from django.core.mail import EmailMultiAlternatives
 from smtplib import SMTPException
 import logging
@@ -61,14 +61,13 @@ def send_subs_new_post_email(agpost):
         absolute_path = 'https://www.' + str(format(domain))
 
         # Build unsubscribe link
-        token = encrypt(sub.email + "-" + sub.username + "-" + str(randint(10,99)))
-        unsub_confirmation = urljoin(absolute_path, reverse('follow:unsub_confirmation') + "?token=" + token)
+        token = encrypt(sub.email + "-" + timezone.now().today().strftime("%Y%m%d"))
+        unsub_confirmation = urljoin(absolute_path, reverse('homepage:unsub_confirmation') + "?token=" + token)
 
         # Build post link
         post_url = urljoin(absolute_path, reverse('posts:show', kwargs={'slug': agpost.slug}))
 
         data = dict()
-        data["first_name"] = sub.username.split(' ')[0]
         data["desc"] = agpost.desc
         data["body"] = agpost.body
         data["post_url"] = post_url
@@ -78,5 +77,5 @@ def send_subs_new_post_email(agpost):
         # Render email text (html and plain) and set subjet
         html_content = template.render(data)
         text_content = strip_tags(html_content)
-        subject = "New Post: " + str(agpost.title)
+        subject = agpost.title
         status = send_email(sub.email, subject, html_content, text_content)

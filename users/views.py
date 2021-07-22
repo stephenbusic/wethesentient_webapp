@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.utils import timezone
 from posts.models import AGPost, Comment, Reply
 from django.urls import reverse
@@ -6,7 +5,9 @@ from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect
 from . import user_email_utility
 from .encryption_utility import *
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 def unnotify_confirmation(request):
     if "POST" == request.method:
@@ -22,40 +23,38 @@ def unnotify_confirmation(request):
         token = decrypt(token)
         if token:
             token = token.split("-")
-            username, trun_date, type, agpost_ref_num = token
+            username, date_string, type, agpost_ref_num = token
 
             agpost = AGPost.objects.get(ref_number=agpost_ref_num)
             user = User.objects.get(username=username)
 
+            # Determine whether target is a reply or comment, and hence
+            # where to search
             if type == "comment":
-                for comment in Comment.objects.get(author=user, agpost=agpost):
-                    if comment.created_on[11:26] == trun_date:
-                        target = comment
-                        break
-
+                list_to_search = Comment.objects.filter(author=user, agpost=agpost)
             elif type == "reply":
-                for reply in Reply.objects.get(author=user, comment__agpost=agpost):
-                    if reply.created_on[11:26] == trun_date:
-                        target = reply
-                        break
+                list_to_search = Reply.objects.filter(author=user, comment__agpost=agpost)
             else:
-                target = None
+                return render(request, 'msgpage.html', {'msg': "Invalid Link"})
 
-            if target:
-                target.notify = False
-                target.save()
-                msg = "Request complete!"
-                foot = "Notifcations for your reply have been disabled."
-                return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
+            # Begin searching for target
+            for response in list_to_search:
+                this_date_string = str(response.created_on.strftime('%Y%m%d%H%M%S'))
 
-            msg = "An error occured. Email me at aaahhhghosts@gmail.com and I'll get this sorted out!"
-        else:
-            msg = "Invalid Link"
+                # If date_string match found, conclude this is the target
+                if this_date_string == date_string:
+                    target = response
+                    target.notify = False
+                    target.save()
+                    msg = "Request complete!"
+                    foot = "Notifcations for your reply have been disabled."
+                    return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
     except Exception as e:
-        logging.getLogger("error").error("There was an exception while deleting user ", username, e)
+        logging.getLogger("error").error("There was an exception while trying to disable notifications for " +
+                                         username + '\'s ' + type + ": " + str(e))
 
-    return render(request, 'msgpage.html', {'msg': msg})
+    return render(request, 'msgpage.html', {'msg': "Invalid Link"})
 
 
 # Request deletion of account
@@ -134,18 +133,22 @@ def delete_user(user):
     email = str(user.email)
     try:
         # Deactivate all comments and replies first
-        for comment in User.comments:
+        for comment in user.comments.all():
             comment.active = False
-        for reply in User.replies:
+            comment.save()
+
+        for reply in user.replies.all():
             reply.active = False
+            reply.save()
 
         # Deactivate user
         user.is_active = False
         user.save()
 
     except Exception as e:
-        logging.getLogger("error").error("There was an exception while deleting user ", email, e)
+        logging.getLogger("error").error("There was an exception while deactivating user " +
+                                         str(user.email) + ": " + str(e))
         return False
 
-    logging.getLogger("DEBUG").debug("User ", email, " deleted.")
+    logging.getLogger("DEBUG").debug("User " + str(user.email) + " deactivated.")
     return True

@@ -1,18 +1,22 @@
 {% load inlinecss %}
 {% inlinecss "css/email.css" %}
 <div style="padding: 20px; background: #fafafa;font-size:15px;">
-    Hey {{ first_name }},<br>
+    Hey {{ first_name }}!<br>
     <br>
-    {{ replier_name }} replied to your comment. Here's what they said:<br>
+    On the post "{{ agpost_title }}", {{ replier_name }} replied to your comment shown below:
     <br>
-    <p>{{ body }}</p>
+    <p><i>{{ parent_body }}</i></p>
     <br>
-    To respond, visit the comment section for the post "{{ agpost_title }}":<br>
-    <a href="{{ post_url }}">{{ post_url }}</a>.<br>
+    Here's what they said in response:
+    <br>
+    <p><i>{{ reply_body }}<i></p>
+    <br>
+    To reply back, visit the comment section here:
+    <a href="{{ post_url }}#comments">{{ post_url }}</a>.<br>
     <br>
     <br>
     <div class="footer">
-        Don't want to be notified about future replies to this comment? Here's a link for that: <a href="{{ unnotify_url }}">{{ unnotify_url }}</a>
+        Don't want to be notified about future replies to this comment? There's a link for that: <a href="{{ unnotify_url }}">{{ unnotify_url }}#comments</a>
     </div>
 </div>
 {% endinlinecss %}

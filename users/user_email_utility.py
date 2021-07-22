@@ -1,4 +1,5 @@
 from django.template.loader import get_template
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.contrib.sites.models import Site
 from django.urls import reverse
@@ -31,7 +32,7 @@ def send_reply_notice(parent, reply):
 
     recipient = parent.author
     username = recipient.username
-    trun_date = str(parent.created_on)[11:26]
+    date_string = str(parent.created_on.strftime('%Y%m%d%H%M%S'))
 
     if isinstance(parent, Comment):
         agpost = parent.agpost
@@ -41,7 +42,7 @@ def send_reply_notice(parent, reply):
         type = "reply"
 
     # Build unsubscribe link
-    token = encrypt(username + "-" + trun_date + "-" + type + "-" + agpost.ID)
+    token = encrypt(username + "-" + date_string + "-" + type + "-" + str(agpost.ref_number))
     unnotify_confirmation_url = urljoin(absolute_path, reverse('users:unnotify_confirmation') + "?token=" + token)
 
     # Build post link
@@ -51,7 +52,8 @@ def send_reply_notice(parent, reply):
     data["first_name"] = recipient.get_full_name()
     data["replier_name"] = reply.author.get_full_name()
     data["agpost_title"] = agpost.title
-    data["body"] = reply.body
+    data["parent_body"] = parent.body
+    data["reply_body"] = reply.handle + " " + reply.body
     data["post_url"] = post_url
     data["unnotify_url"] = unnotify_confirmation_url
     template = get_template("email_templates/reply_notify_email.html")

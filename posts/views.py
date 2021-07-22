@@ -119,23 +119,22 @@ def show_post(request, slug):
                         new_reply.save()
 
                         # Check if replier is author of original comment
-                        # Also check if author of original should be notified
-                        user_isnt_par_comment_author = not parent_comment.author == user
+                        user_is_par_comment_author = (user == parent_comment.author)
+                        user_is_par_reply_author = (user == parent_comment.author)
 
-                        # Let original commenter know if their comment has been replied to
-                        # if commenter set notifications and reply is not posted by them
-                        if parent_comment.notify and user_isnt_par_comment_author:
+                        # If user is not author of the parent object, and
+                        # the parent is set for notifications, send notice
+                        # to the author of the parent object
+                        if parent.author != user and parent.notify:
                             send_reply_notice(parent, new_reply)
-                            already_notified = True
-                        else:
-                            already_notified = False
 
-                        # If reply of reply, AND if author of parent reply is not also
-                        # the author of parent comment, notify author of reply
-                        if reply_num > 0 and not already_notified:
-                            user_isnt_par_reply_author = not parent.is_author(user)
-                            if parent_reply.notify and user_isnt_par_reply_author:
-                                send_reply_notice(parent, new_reply)
+                        # If the author of the parent object is not the
+                        # author of the parent comment, then the author of
+                        # the parent comment has not been notified yet. So,
+                        # notify them too if the parent comment is set
+                        # for notifications.
+                        if parent.author != parent_comment.author and parent_comment.notify:
+                            send_reply_notice(parent_comment, new_reply)
 
                     # EDIT COMMENT/REPLY
                     elif action == 'create_edit':
