@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block intro %}
+<!-- Intro -->
+<div id="intro">
+	<h7>we the sentient</h7>
+	<p>a philosophy blog for conscious creatures</p>
+	<ul class="actions">
+		<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
+	</ul>
+</div>
+{% endblock intro %}
+
+{% block content %}
+	<section class="post">
+
+		<h1 class="align-center" style="margin-bottom: 0rem;">Welcome to my blog</h1>
+		<br>
+		<p>
+			<span class="image left"><img src="{% static 'images/bio_pic.jpg' %}" alt="" /></span>
+			My name is Stephen. I go by Scuub (like Scoob, but spelled with two U's).
+			I'm a Ginger kid who skateboards, does amateur graffiti, and writes about philosophy.
+			<i>AAAHHH ghosts</i> is a weird name for a blog, I know. It was partly spat out of a randomized
+			band name generator I programmed. I make weird music too, speaking of which. Sometimes I'll post
+			about that stuff here. Mostly this website is a dumping ground for my philosophical
+			hot takes. I tend to write most about Ethics, Philosophy of Religion, and Metaphysics.
+			I believe studying philosophy can help us make the world a kinder place for all sentient
+			life, regardless of their race, gender identity, sexual orientation, nationality,
+			or species. Studying ethics continues to inform me as an activist not just for pressing
+			human rights issues (racial justice, equal rights for sexual and gender minorities, and so
+			on), but also for non-human animal rights (go vegan!). Anyways, thanks for visiting my blog.
+			I don't have many posts up yet, but feel free to browse and maybe even leave a comment
+			or two. Much love <3
+		</p>
+
+
+	</section>
+
+	<section>
+		<h2>New posts every-so-often-ish</h2>
+		<p>Get notified about the latest posts!</p>
+		<form method="post" id="subscription_form">
+			{% csrf_token %}
+
+			<div class="row gtr-uniform">
+
+				<div class="col-5"><input type="email" class="col 5" name="email" placeholder="Email" required></div>
+
+				<div class="col-1"><input type="submit"></div>
+
+			</div>
+			<input type="hidden" name="g-recaptcha-response" id='recaptcha'>
+			<input type="hidden" name="create_subscription" id="create_subscription" value="created">
+		</form>
+
+		<h2>Contact</h2>
+		<p><h3 style="display: inline;">my email: </h3>aaahhhghosts@gmail.com</p>
+	</section>
+
+
+	<!-- Featured Post --
+	{% if latest_agposts.count > 0 %}
+		<article class="post featured">
+
+			<div class="image main"><img src="{{ latest_agposts.0.thumb.url }}" alt="" /></div>
+			<header>
+				<h2>{{ latest_agposts.0.title|safe }}</h2>
+			</header>
+			{{ latest_agposts.0.desc|safe }}
+			<ul class="actions special">
+				<li><a href="{% url 'posts:show' latest_agposts.0.slug %}" class="button large">Read More</a></li>
+			</ul>
+
+		</article>
+	{% endif %}
+
+	{% if latest_agposts.count > 1 %}
+		<h1 class="align-center" style="margin-bottom: 0rem;">Featured</h1>
+		<section class="posts">
+
+			{% for agpost in latest_agposts|slice:"1:" %}
+			<article>
+				<header>
+					<h2>{{ agpost.title|safe }}</h2>
+				</header>
+				<div class="image fit"><img src="{{ agpost.thumb.url }}" alt="" /></div>
+				<p>{{ agpost.desc|safe }}</p>
+				<ul class="actions special">
+					<li><a href="{% url 'posts:show' agpost.slug %}" class="button">Read More</a></li>
+				</ul>
+			</article>
+			{% endfor %}
+		</section>
+	{% endif %}-->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+	<script type="text/javascript">
+
+		// When reCaptcha v3 is ready, add verifications to each form submit button
+		grecaptcha.ready(function() {
+
+			// Add reCaptcha Verficiation to the static comment form
+			$("#subscription_form").submit(function(e) {
+                var form = this;
+
+                e.preventDefault();
+                grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
+
+					// Add token to hidden recaptcha input field
+					document.getElementById("recaptcha").value = token;
+					form.disabled = true;
+                    form.submit();
+   					form.reset();
+            	});
+            });
+		});
+	</script>
+{% endblock content %}
+

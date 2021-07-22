@@ -1,0 +1,22 @@
+{% load inlinecss %}
+{% inlinecss "css/email.css" %}
+<div style="padding: 20px; background: #fafafa;font-size:15px;">
+    Waddup Scuub,<br>
+    <br>
+    Here's what's been happening on your blog today:<br>
+    <br>
+    <b>{{ users_header }}</b>
+    <br>
+    <p>{{ user_list|linebreaks }}</p>
+    <br>
+    <b>{{ comments_header }}</b>
+    <br>
+    <p>{{ comment_list|linebreaks }}</p>
+    <br>
+    <b>{{ replies_header }}</b>
+    <br>
+    <p>{{ reply_list|linebreaks }}</p>
+    <br>
+    <b>Hope those stats are dope. If not, don't sweat it kid.</b><br>
+</div>
+{% endinlinecss %}

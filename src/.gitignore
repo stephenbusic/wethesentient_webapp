@@ -1,2 +1,0 @@
-# Ignore sqlite3 database for testing
-db.sqlite3

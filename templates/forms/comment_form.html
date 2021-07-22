@@ -1,0 +1,58 @@
+        <!-- Create new comment form -->
+        <div class="row gtr-uniform">
+            <div class="col-12">
+
+                {% if user.is_authenticated %}
+                    <h2>Leave a comment</h2>
+                    <!-- Welcome user if logged in -->
+                    <div class="row aln-middle">
+                        <h3><b class="lighten">Welcome, {{ user.get_full_name }}.</b></h3>
+                        <h3><a class="lighten" href="{% url 'account_logout' %}?next={% firstof request.path '/' %}">Logout</a></h3>
+                    </div>
+
+                    {% if user_has_comment_perms %}
+                    <!-- If logged in user has permission to comment
+                         on posts, display the create comment form -->
+
+                    <form method="post" id="comment_form">
+                        {% csrf_token %}
+
+                        <!-- Main textbox -->
+                        <div class="bottom pad">
+                            {{ comment_form.body }}
+                        </div>
+
+                        <!-- Option to be notified if another user replies -->
+                        <div class="bottom pad">
+                            {{ comment_form.notify }}
+                            <label for={{ comment_form.notify.id_for_label }}>Notify me if someone replies.</label>
+                        </div>
+
+                        <!-- Button to post comment to the comment section -->
+                        <ul class="actions">
+                            <li><input type="submit" value="Post"></li>
+                        </ul>
+
+                        <!-- Hidden parameters for recaptcha and for determining
+                             that the form submitted is the create comment form -->
+                        <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
+                        <input type="hidden" name="is_comment_form" id="create_comment" value="true">
+                    </form>
+
+                    {% else %}
+                    <!-- If logged in user was banned from leaving comments,
+                         display informative message -->
+
+                        <p>You cannot comment or reply to comments because your privileges have been
+                            revoked. Please reach me at <b>AAAHHHghosts@gmail.com</b> if you believe this
+                            to be a mistake. Thank you!</p>
+                    {% endif %}
+
+                {% else %}
+                <!-- If no user is logged in, prompt them to login
+                     instead of showing create comment form -->
+
+                    {% include "account/login.html" %}
+                {% endif %}
+            </div>
+        </div>
