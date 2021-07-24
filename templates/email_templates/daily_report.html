@@ -5,6 +5,12 @@
     <br>
     Here's what's been happening on your blog today:<br>
     <br>
+    <b>In all, your posts saw {{ view_count }} views.</b><br>
+    <br>
+    <b>{{ subs_header }}</b>
+    <br>
+    <p>{{ sub_list|linebreaks }}</p>
+    <br>
     <b>{{ users_header }}</b>
     <br>
     <p>{{ user_list|linebreaks }}</p>
@@ -17,6 +23,6 @@
     <br>
     <p>{{ reply_list|linebreaks }}</p>
     <br>
-    <b>Hope those stats are dope. If not, don't sweat it kid.</b><br>
+    <p>Hope those stats are dope. If not, don't sweat it kid.</p><br>
 </div>
 {% endinlinecss %}

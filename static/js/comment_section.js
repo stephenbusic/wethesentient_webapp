@@ -65,8 +65,6 @@
 			});
 		});
 
-
-
 		// Add reCaptcha Verficiation to each of the dropdown forms
 		const dropdown_forms = document.querySelectorAll('.dropdown_form');
 		dropdown_forms.forEach(function(currentBtn){

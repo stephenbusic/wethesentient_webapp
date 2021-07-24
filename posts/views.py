@@ -3,10 +3,10 @@ import requests
 from django.utils import timezone
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
-from posts.models import AGPost, Reply
+from posts.models import AGPostView, Reply
 from django.db.models import Prefetch
 from users.user_email_utility import send_reply_notice
 from .forms import CommentForm, DropdownForm
@@ -15,12 +15,11 @@ from .models import AGPost
 
 # View to display all existing agposts
 def allposts(request, page_num):
-
     # Get all active agposts
-    active_agposts = AGPost.objects.filter(active=True).order_by('-date')
+    listed_agposts = AGPost.objects.filter(unlisted=False).order_by('date')
 
     # Create paginator to show 4 posts per page
-    paginator = Paginator(active_agposts, 4)
+    paginator = Paginator(listed_agposts, 4)
     page_obj = paginator.get_page(page_num)
 
     # Render all agposts page
@@ -38,11 +37,11 @@ def show_post(request, slug):
 
         # Get all active comments, and for each active
         # comment, get all active replies
-        active_comments = req_agpost.comments.filter(active=True)\
+        active_comments = req_agpost.comments.filter(active=True, author__is_active=True) \
             .order_by('rank', '-created_on').prefetch_related(
             Prefetch(
                 'replies',
-                queryset=Reply.objects.filter(active=True),
+                queryset=Reply.objects.filter(active=True, author__is_active=True),
                 to_attr='active_replies'
             )
         )
@@ -65,7 +64,6 @@ def show_post(request, slug):
 
                 # If comment form is valid, try and get reCaptcha score
                 if comment_form.is_valid():
-                    
                     # Create comment object but don't save to database yet
                     new_comment = comment_form.save(commit=False)
 
@@ -93,8 +91,9 @@ def show_post(request, slug):
                     # because the dropdown form was submitted on a comment.
                     # But if reply_num > 0, then parent is a reply.
                     parent_comment = active_comments[comment_num]
+                    active_replies = parent_comment.replies.filter(active=True, author__is_active=True).all()
                     if reply_num > 0:
-                        parent_reply = parent_comment.replies.all()[reply_num - 1]
+                        parent_reply = active_replies[reply_num - 1]
                         parent = parent_reply
                     else:
                         parent = parent_comment
@@ -113,7 +112,7 @@ def show_post(request, slug):
                         new_reply.author = user
 
                         # Also, add handle
-                        new_reply.handle = "@" + parent.author.first_name
+                        new_reply.handle_user = parent.author
 
                         # Save the comment to the database
                         new_reply.save()
@@ -142,7 +141,7 @@ def show_post(request, slug):
                         # Proceed only if current logging in user's name and email
                         # matches the author's of the reply the user is trying to edit.
                         # In other words, make sure if user is editing their own reply.
-                        if parent.is_author(user):
+                        if user == parent.author:
 
                             # Check if edit is to delete the reply. Delete it if so
                             if request.POST.get('is_deletion', '') == 'true':
@@ -173,7 +172,7 @@ def show_post(request, slug):
         # and with recaptcha site key
         return render(request, 'agpost.html', {'agpost': req_agpost, 'active_comments': active_comments,
                                                'comment_form': comment_form, 'dropdown_form': dropdown_form,
-                                               'site_key': site_key})
+                                               'site_key': site_key, 'pk': req_agpost.pk})
 
 
 # Function to try and find an existing agpost based on a given slug
@@ -203,3 +202,32 @@ def pass_recaptcha(request):
     # If recaptcha state is success and score is good, return true.
     # Else, return false.
     return result['success'] == True and result['score'] >= 0.5
+
+
+# View called by ajax to record a page view
+def record_post_view(request):
+
+    # Proceed only if ajax request
+    if request.is_ajax():
+
+        data = {'success': False}
+
+        # Get agpost post to count view for
+        pk = request.POST.get('agpost_pk', None)
+        agpost = AGPost.objects.get(pk=pk)
+
+        # If view hasn't alreay been made for this user,
+        # create view instance and save
+        if not AGPostView.objects.filter(
+                agpost=agpost,
+                session=request.session.session_key):
+            view = AGPostView(agpost=agpost,
+                              ip=request.META['REMOTE_ADDR'],
+                              session=request.session.session_key)
+            view.save()
+        data['success'] = True
+
+        return JsonResponse(data)
+
+    error_msg = "Sorry! Post not found :("
+    return render(request, 'msgpage.html', {'msg': error_msg})

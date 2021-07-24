@@ -2,27 +2,27 @@
 	{% load static %}
 	{% block content %}
 
-	<!-- HTML for Blog Post -->
+	{# HTML for Blog Post #}
 	<section class="post">
+		<input type="hidden" id="agpost_pk" pk="{{ pk }}">
 
-		<!-- Display post title & author, as well as a message if the post
-			 is not public (unlisted) -->
+		{# Display post title & author, as well as a message if the post is not public (unlisted) #}
 		<header class="major">
 			<h1>{{ agpost.title }}</h1>
 			<h4 class="lighten">By {{ agpost.author|safe }}</h4>
 			{% if agpost.active is False %}<h4>Unlisted Article</h4>{% endif %}
 		</header>
 
-		<!-- Display post image in right corner of text -->
+		{# Display post image in right corner of text #}
 		<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 
-			<!-- Display the main content of the post -->
+			{# Display the main content of the post #}
 			{% lorem %}
 			{% lorem %}
 			{{ agpost.body|safe }}
 		</p>
 
-		<!-- Add a sources section if the post has citations -->
+		{# Add a sources section if the post has citations #}
 		{% if agpost.has_sources %}
 		<div class="align-center bottom pad">
 			<input value="Show Sources" type="button" id="sources_click">
@@ -33,13 +33,13 @@
 		</div>
 		{% endif %}
 
-		<!-- Add date the post was created to bottom of the post -->
+		{# Add date the post was created to bottom of the post #}
 		<br clear="both"><header class="major"><span class="date">{{ agpost.date }}</span></header>
 
-		<!-- COMMENT SECTION -->
+		{# COMMENT SECTION #}
 		{% include 'forms/comment_form.html' with user_has_comment_perms=perms.posts.can_comment_or_reply %}
 		<hr>
-		<!-- Display all active comments -->
+		{# Display all active comments #}
 		<h2>Comments</h2>
 		<div id="comments">
 			{% if active_comments %}
@@ -50,17 +50,39 @@
 		</div>
 	</section>
 
-	<!-- Prepare to load scripts -->
+	{# Prepare to load scripts #}
 	{% load static %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
+	{# script for recording page views #}
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			// create an AJAX call
+			var pk_element = document.getElementById("agpost_pk");
+			var pk = pk_element.getAttribute("pk");
+			$.ajax({
+
+				type: "post",
+				url: "{% url 'posts:record_post_view' %}",
+				data: {
+					'agpost_pk': pk,
+					'csrfmiddlewaretoken': '{{ csrf_token }}'
+				},
+				error: function(data) {
+					console.log("Ajax error occured while trying to record page view.")
+				}
+			});
+		});
+	</script>
+
 	{% if agpost.has_sources %}
-		<!-- JQuery for hiding and showing agpost sources list -->
+		{# JQuery for hiding and showing agpost sources list #}
 		<script type="text/javascript" src="{% static 'js/agpost_sources.js' %}"></script>
 	{% endif %}
 
 	{% if user.is_authenticated and perms.posts.can_comment_or_reply %}
-		<!-- JS scripts for hiding and showing reply forms -->
+		{# JS scripts for hiding and showing reply forms #}
 		<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
 		<script type="text/javascript">
 			var site_key="{{ site_key }}"

@@ -1,4 +1,3 @@
-{% load analytical %}
 <!DOCTYPE html>
 <!--
 	Massively by HTML5 UP
@@ -7,12 +6,9 @@
 -->
 <html lang="en">
     <head>
-        {% analytical_head_top %}
         {% include "head.html" %}
-        {% analytical_head_bottom %}
     </head>
     <body class="is-preload">
-        {% analytical_body_top %}
         <div id="wrapper" class="fade-in">
 
             {% block intro %}
@@ -26,7 +22,6 @@
                 {% endblock content %}
             </div>
         </div>
-        {% analytical_body_bottom %}
     </body>
     <footer>
         {% include 'footer.html' %}

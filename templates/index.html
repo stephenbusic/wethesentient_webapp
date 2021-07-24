@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block intro %}
-<!-- Intro -->
+{# Intro #}
 <div id="intro">
 	<h7>we the sentient</h7>
 	<p>a philosophy blog for conscious creatures</p>
@@ -57,42 +57,6 @@
 		<h2>Contact</h2>
 		<p><h3 style="display: inline;">my email: </h3>aaahhhghosts@gmail.com</p>
 	</section>
-
-
-	<!-- Featured Post --
-	{% if latest_agposts.count > 0 %}
-		<article class="post featured">
-
-			<div class="image main"><img src="{{ latest_agposts.0.thumb.url }}" alt="" /></div>
-			<header>
-				<h2>{{ latest_agposts.0.title|safe }}</h2>
-			</header>
-			{{ latest_agposts.0.desc|safe }}
-			<ul class="actions special">
-				<li><a href="{% url 'posts:show' latest_agposts.0.slug %}" class="button large">Read More</a></li>
-			</ul>
-
-		</article>
-	{% endif %}
-
-	{% if latest_agposts.count > 1 %}
-		<h1 class="align-center" style="margin-bottom: 0rem;">Featured</h1>
-		<section class="posts">
-
-			{% for agpost in latest_agposts|slice:"1:" %}
-			<article>
-				<header>
-					<h2>{{ agpost.title|safe }}</h2>
-				</header>
-				<div class="image fit"><img src="{{ agpost.thumb.url }}" alt="" /></div>
-				<p>{{ agpost.desc|safe }}</p>
-				<ul class="actions special">
-					<li><a href="{% url 'posts:show' agpost.slug %}" class="button">Read More</a></li>
-				</ul>
-			</article>
-			{% endfor %}
-		</section>
-	{% endif %}-->
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>

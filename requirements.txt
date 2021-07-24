@@ -10,7 +10,6 @@ cssutils==1.0.2
 defusedxml==0.6.0
 Django==3.0.8
 django-allauth==0.44.0
-django-analytical==3.0.0
 django-ckeditor==6.0.0
 django-crispy-forms==1.9.2
 django-groupadmin-users==0.3.3

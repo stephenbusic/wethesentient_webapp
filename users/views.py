@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 def unnotify_confirmation(request):
     if "POST" == request.method:
         raise Http404
@@ -23,16 +24,16 @@ def unnotify_confirmation(request):
         token = decrypt(token)
         if token:
             token = token.split("-")
-            username, date_string, type, agpost_ref_num = token
+            email, date_string, obj_type, agpost_pk = token
 
-            agpost = AGPost.objects.get(ref_number=agpost_ref_num)
-            user = User.objects.get(username=username)
+            agpost = AGPost.objects.get(pk=agpost_pk)
+            user = User.objects.get(email=email)
 
             # Determine whether target is a reply or comment, and hence
             # where to search
-            if type == "comment":
+            if obj_type == "comment":
                 list_to_search = Comment.objects.filter(author=user, agpost=agpost)
-            elif type == "reply":
+            elif obj_type == "reply":
                 list_to_search = Reply.objects.filter(author=user, comment__agpost=agpost)
             else:
                 return render(request, 'msgpage.html', {'msg': "Invalid Link"})
@@ -47,12 +48,12 @@ def unnotify_confirmation(request):
                     target.notify = False
                     target.save()
                     msg = "Request complete!"
-                    foot = "Notifcations for your reply have been disabled."
+                    foot = "Notifcations for your " + obj_type + " have been disabled."
                     return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
     except Exception as e:
         logging.getLogger("error").error("There was an exception while trying to disable notifications for " +
-                                         username + '\'s ' + type + ": " + str(e))
+                                         email + '\'s ' + type + ": " + str(e))
 
     return render(request, 'msgpage.html', {'msg': "Invalid Link"})
 
@@ -117,38 +118,17 @@ def deletion_confirmation(request):
             # If user with this email exists, and that user
             # has same username, deactivate the user
             if User.objects.filter(email=email).exists():
+
                 user = User.objects.get(email=email)
-                if delete_user(user):
-                    msg = "Account deleted. Take care!"
-                    return render(request, 'msgpage.html', {'msg': msg})
+                # Deactivate user
+                user.is_active = False
+                user.save()
+
+                logging.getLogger("DEBUG").debug("User " + str(user.email) + " deactivated.")
+
+                msg = "Account deactivated. Take care!"
+                return render(request, 'msgpage.html', {'msg': msg})
 
     # Return error is failed decrypt
     msg = "Link Invalid or Timed Out"
     return render(request, 'msgpage.html', {'msg': msg})
-
-
-# Function for deactivating users
-def delete_user(user):
-
-    email = str(user.email)
-    try:
-        # Deactivate all comments and replies first
-        for comment in user.comments.all():
-            comment.active = False
-            comment.save()
-
-        for reply in user.replies.all():
-            reply.active = False
-            reply.save()
-
-        # Deactivate user
-        user.is_active = False
-        user.save()
-
-    except Exception as e:
-        logging.getLogger("error").error("There was an exception while deactivating user " +
-                                         str(user.email) + ": " + str(e))
-        return False
-
-    logging.getLogger("DEBUG").debug("User " + str(user.email) + " deactivated.")
-    return True

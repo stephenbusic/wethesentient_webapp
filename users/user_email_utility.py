@@ -14,7 +14,7 @@ from django.conf import settings
 
 def send_email(email, subject, html_content, text_content):
 
-    #Send email with subject as both html and plain text
+    # Send email with subject as both html and plain text
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
     msg.attach_alternative(html_content, "text/html")
     try:
@@ -31,7 +31,7 @@ def send_reply_notice(parent, reply):
     absolute_path = 'https://www.' + str(format(domain))
 
     recipient = parent.author
-    username = recipient.username
+    email = recipient.email
     date_string = str(parent.created_on.strftime('%Y%m%d%H%M%S'))
 
     if isinstance(parent, Comment):
@@ -42,7 +42,7 @@ def send_reply_notice(parent, reply):
         type = "reply"
 
     # Build unsubscribe link
-    token = encrypt(username + "-" + date_string + "-" + type + "-" + str(agpost.ref_number))
+    token = encrypt(email + "-" + date_string + "-" + type + "-" + str(agpost.pk))
     unnotify_confirmation_url = urljoin(absolute_path, reverse('users:unnotify_confirmation') + "?token=" + token)
 
     # Build post link
@@ -53,7 +53,7 @@ def send_reply_notice(parent, reply):
     data["replier_name"] = reply.author.get_full_name()
     data["agpost_title"] = agpost.title
     data["parent_body"] = parent.body
-    data["reply_body"] = reply.handle + " " + reply.body
+    data["reply_body"] = reply.body
     data["post_url"] = post_url
     data["unnotify_url"] = unnotify_confirmation_url
     template = get_template("email_templates/reply_notify_email.html")
@@ -62,39 +62,6 @@ def send_reply_notice(parent, reply):
     html_content = template.render(data)
     text_content = strip_tags(html_content)
     subject = "Someone Replied to your Comment"
-    return send_email(recipient.email, subject, html_content, text_content)
-
-
-def send_replier_reply_notice(parent_reply, reply):
-
-    domain = Site.objects.get_current().domain
-    absolute_path = 'https://www.' + str(format(domain))
-
-    email = parent_reply.email
-    print("email: " + str(email))
-    trun_date = str(parent_reply.created_on)[11:26]
-    agpost = reply.comment.agpost
-
-    # Build unsubscribe link
-    token = encrypt(email + "-" + trun_date + "-" + agpost.title)
-    unnotify_confirmation_url = urljoin(absolute_path, reverse('users:unnotify_reply_confirmation') + "?token=" + token)
-
-    # Build post link
-    post_url = urljoin(absolute_path, reverse('posts:show', kwargs={'slug': agpost.slug}))
-
-    data = dict()
-    data["first_name"] = parent_reply.name.split(' ')[0]
-    data["replier_name"] = reply.name
-    data["agpost_title"] = agpost.title
-    data["body"] = reply.body
-    data["post_url"] = post_url
-    data["unnotify_url"] = unnotify_confirmation_url
-    template = get_template("email_templates/reply_notify_email.html")
-
-    # Render email text (html and plain) and set subject
-    html_content = template.render(data)
-    text_content = strip_tags(html_content)
-    subject = "Someone Responded to your Reply"
     return send_email(email, subject, html_content, text_content)
 
 

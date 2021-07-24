@@ -59,14 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    # Custom apps
-    'homepage',
-    'posts',
-    'veganism',
-    'users',
-
     # 3rd party apps
-    'analytical',
     'django_inlinecss',
     'ckeditor',
     'ckeditor_uploader',
@@ -77,6 +70,12 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.facebook',
+
+    # Custom apps
+    'homepage',
+    'posts',
+    'veganism',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -248,12 +247,6 @@ CKEDITOR_CONFIGS = {
     'extraPlugins': ','.join(['tab','justify','liststyle','indent','uploadimage']),
     'tabSpaces': 4,
 }
-
-
-# --- Django Analytical Settings ---
-CLICKY_SITE_ID = config.analytical['clicky_ID']
-CRAZY_EGG_ACCOUNT_NUMBER = config.analytical['crazyegg_Num']
-
 
 # --- AllAuth Settings ---
 # Disable new users signup

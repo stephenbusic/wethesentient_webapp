@@ -1,3 +1,5 @@
+import re
+
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth.models import User
@@ -50,6 +52,7 @@ class YesNewUsersSocialAccountAdapter(DefaultSocialAccountAdapter):
             user = sociallogin.user
             if not user.is_active:
                 user.is_active = True
+                user.save()
             return
 
         # some social logins don't have an email address
@@ -105,16 +108,17 @@ class CustomSocialSignupForm(SignupForm):
             counter += 1
         user.first_name = full_name
 
-        # Ensure full name is unique
+        # Convert first name into username
+        username = full_name.replace(' ', '_').lower()
+        username = re.sub('[^a-zA-Z0-9_]+', '', username)
+
+        # Ensure full name is unique. No two users can have
+        # identical usernames.
         counter = 1
-        raw_username = full_name.replace(' ', '_').lower()
-        username = ''
-        username.join(e for e in raw_username if (e.isalnum() or e == '_'))
-
-        while User.objects.filter(first_name__iexact=username):
+        while User.objects.filter(username__iexact=username):
             user.first_name = full_name + str(counter)
+            user.username = username + str(counter)
             counter += 1
-        user.username = username
-        user.save()
 
+        user.save()
         return user

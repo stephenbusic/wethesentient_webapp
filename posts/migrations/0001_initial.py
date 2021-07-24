@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('square_thumb', models.ImageField(blank=True, default='default_square_thumb.jpg', upload_to=posts.models.generate_imagepath)),
                 ('email_subs', models.BooleanField(default=False)),
                 ('active', models.BooleanField(default=True)),
-                ('ref_number', models.IntegerField(default=posts.models.create_new_ref_number)),
+
             ],
             options={
                 'verbose_name_plural': 'AGPosts',

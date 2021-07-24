@@ -1,13 +1,14 @@
 import logging
-
+from users.user_email_utility import send_email
+from django.conf import settings
 from django.template.loader import get_template
 from django.utils.html import strip_tags
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from posts.models import Comment, Reply
-from users.user_email_utility import send_email
-from django.conf import settings
+from posts.models import Comment, Reply, AGPostView
+from homepage.models import Subscriber
+
 
 User = get_user_model()
 
@@ -20,13 +21,19 @@ class Command(BaseCommand):
         today = timezone.now().today()
         scuubs_email = settings.EMAIL_HOST_USER
 
+        todays_subs = Subscriber.objects.filter(date_created__date=today)
         todays_users = User.objects.filter(date_joined__date=today)
         todays_comments = Comment.objects.filter(created_on__date=today)
         todays_replies = Reply.objects.filter(created_on__date=today)
+        todays_views = AGPostView.objects.filter(created_on__date=today)
+
+        sub_list = ""
+        for sub in todays_subs:
+            sub_list += (str(sub.email) + '\n')
 
         user_list = ""
         for user in todays_users:
-            user_list += (user.get_full_name + '\n')
+            user_list += (user.get_full_name() + '\n')
 
         comment_list = ""
         for comment in todays_comments:
@@ -37,12 +44,14 @@ class Command(BaseCommand):
             reply_list += (str(reply) + '\n')
 
         data = dict()
+        data["subs_header"] = str(len(todays_subs)) + " subscribers joined today:\n"
         data["users_header"] = str(len(todays_users)) + " users joined today:\n"
         data["comments_header"] = str(len(todays_comments)) + " comments posted today:\n"
         data["replies_header"] = str(len(todays_replies)) + " replies posted today:\n"
         data["user_list"] = user_list
         data["comment_list"] = comment_list
         data["reply_list"] = reply_list
+        data["view_count"] = str(len(todays_views))
 
         # Render email text (html and plain) and set subject
         template = get_template("email_templates/daily_report.html")

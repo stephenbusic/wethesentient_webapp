@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         now = timezone.now()
-        days_to_live = 7
+        days_to_live = 5
         del_count = 0
 
         # Delete inactive replies

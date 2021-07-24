@@ -7,7 +7,6 @@ from django.utils import timezone
 from homepage.sub_email_utility import send_subs_new_post_email
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
-import random
 
 User = get_user_model()
 
@@ -16,16 +15,6 @@ User = get_user_model()
 def generate_imagepath(self, filename):
     url = "%s/%s" % (self.slug, filename)
     return url
-
-
-# Generate unique ID number for agpost
-def create_new_ref_number():
-    not_unique = True
-    while not_unique:
-        unique_ref = random.randint(100000, 999999)
-        if not AGPost.objects.filter(ref_number=unique_ref):
-            not_unique = False
-    return unique_ref
 
 
 # Model for AAAHHH ghosts post
@@ -42,11 +31,10 @@ class AGPost(models.Model):
     thumb = models.ImageField(upload_to=generate_imagepath, default='default_thumb.jpg', blank=True)
     square_thumb = models.ImageField(upload_to=generate_imagepath, default='default_square_thumb.jpg', blank=True)
     email_subs = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
-    ref_number = models.IntegerField(default=create_new_ref_number)
+    unlisted = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['-date']
+        ordering = ['date']
         verbose_name_plural = "AGPosts"
         permissions = [
             ("can_comment_or_reply", "Can create comments or replies"),
@@ -76,6 +64,20 @@ class AGPost(models.Model):
                 i += 1
             self.slug = new_slug
         super(AGPost, self).save()
+
+
+class AGPostView(models.Model):
+    agpost = models.ForeignKey(AGPost, related_name='views', on_delete=models.CASCADE, null=True)
+    ip = models.CharField(max_length=40)
+    session = models.CharField(max_length=40)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_on']
+        verbose_name_plural = "AGPost Views"
+
+    def __str__(self):
+        return self.agpost.title
 
 
 # Create receiver to listen for when new posts are created.
@@ -128,13 +130,8 @@ class Comment(models.Model):
 
         super(Comment, self).save()
 
-    # Method for determining if given user is
-    # the author of the comment
-    def is_author(self, user):
-        if user.is_authenticated:
-            return user is self.author
-        else:
-            return False
+    def get_admin_url(self):
+        return "/admin/posts/comments/%d/" % self.id
 
 
 # Model for reach reply on a comments
@@ -142,7 +139,7 @@ class Reply(models.Model):
     comment = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE, related_name='replies')
     author = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='replies')
     body = models.TextField(max_length=4000)
-    handle = models.CharField(max_length=90, default="", blank=True)
+    handle_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='handles', blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     deactivated_on = models.DateTimeField(null=True, blank=True)
     active = models.BooleanField(default=True)
@@ -179,11 +176,6 @@ class Reply(models.Model):
 
         super(Reply, self).save()
 
-    # Method for determining if given user is
-    # the author of the comment
-    def is_author(self, user):
-        if user.is_authenticated:
-            return user is self.author
-        else:
-            return False
+    def get_admin_url(self):
+        return "/admin/posts/replies/%d/" % self.id
 

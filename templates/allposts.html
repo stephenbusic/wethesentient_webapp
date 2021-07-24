@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-	<!-- Unused code for sorting posts by categories -->
+
+	{% comment %}
+	{# Unused code for sorting posts by categories #}
 	<!-- <div class="col-12">
         <select name="demo-category" id="demo-category">
             <option value="">- All Categories -</option>
@@ -9,22 +11,22 @@
             <option value="1">Fiction</option>
         </select>
     </div> -->
+	{% endcomment %}
 
-	<!-- If there are any posts, then iterate through them
-		 and add them to a square on the webpage -->
+	{# If there are any posts, then iterate through them and add them to a square on the webpage #}
 	{% if active_agposts.object_list.count > 0 %}
 		<section class="posts">
 			{% for agpost in active_agposts %}
 				<article>
 
-					<!-- Add post title, image, and desciption to square -->
+					{# Add post title, image, and desciption to square #}
 					<header>
 						<h2>{{ agpost.title }}</h2>
 					</header>
 					<div class="image fit"><img src="{{ agpost.thumb.url }}" alt="" /></div>
 					<p>{{ agpost.desc|safe }}</p>
 
-					<!-- Add read button to bottom of square-->
+					{# Add read button to bottom of square#}
 					<ul class="actions special">
 						<li><a href="{% url 'posts:show' agpost.slug %}" class="button">Read More</a></li>
 					</ul>
@@ -32,7 +34,7 @@
 			{% endfor %}
 		</section>
 
-	<! -- If there are no posts, print message -->
+	{# If there are no posts, print message #}
 	{% else %}
 		<section>
 			<h2>No posts found. Check back later!</h2>
@@ -40,25 +42,25 @@
 	{% endif %}
 	<br>
 
-	<!-- Footer w/ Page Nav -->
+	{# Footer w/ Page Nav #}
 	<footer>
 		<div class="paginator">
 
-			<!-- Print current page and how many pages there are total -->
+			{# Print current page and how many pages there are total #}
 			<h5 class="current">Page {{ active_agposts.number }} of {{ active_agposts.paginator.num_pages }}</h5>
 			<br>
 
-			<!-- Page navigation -->
+			{# Page navigation #}
 			<span class="step-links">
 
-				<!-- If there is a previous page, add "prev" button -->
+				{# If there is a previous page, add "prev" button #}
 				{% if active_agposts.has_previous %}
 					<a class="button" href="{{ active_agposts.previous_page_number }}">prev</a>
 				{% else %}
 					<input type="button" value="prev" disabled="true"/>
 				{% endif %}
 
-				<!-- If there is a next page, add "next" button -->
+				{# If there is a next page, add "next" button #}
 				{% if active_agposts.has_next %}
 					<a class="button" href="{{ active_agposts.next_page_number }}">next</a>
 				{% else %}
