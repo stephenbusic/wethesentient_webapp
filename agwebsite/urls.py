@@ -30,9 +30,11 @@ urlpatterns = [
     path('users/', include('users.urls')),
 ]
 
-admin.site.site_title = 'admin | AAAHHHghosts'
+admin.site.site_title = 'admin | WETHESENTIENT'
 admin.site.index_title = ''
 
+admin.site.index_template = 'admin/custom_admin_index.html'
+admin.autodiscover()
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

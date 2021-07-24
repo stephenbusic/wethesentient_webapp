@@ -12,30 +12,25 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        now = timezone.now()
         days_to_live = 5
+        now = timezone.now()
+        time_threshhold = now - timezone.timedelta(days=days_to_live)
         del_count = 0
 
         # Delete inactive replies
-        for reply in Reply.objects.filter(active=False):
-            time_since_deactived = now - reply.deactivated_on
-            if time_since_deactived.days > days_to_live:
-                reply.delete()
-                del_count += 1
+        for reply in Reply.objects.filter(active=False, deactivated_on__lt=time_threshhold):
+            reply.delete()
+            del_count += 1
 
         # Delete inactive comments
-        for comment in Comment.objects.filter(active=False):
-            time_since_deactived = now - comment.deactivated_on
-            if time_since_deactived.days > days_to_live:
-                comment.delete()
-                del_count += 1
+        for comment in Comment.objects.filter(active=False, deactivated_on__lt=time_threshhold):
+            comment.delete()
+            del_count += 1
 
         # Delete inactive users
-        for user in User.objects.filter(is_active=False):
-            time_since_last_login = now - user.last_login
-            if time_since_last_login.days > days_to_live:
-                user.delete()
-                del_count += 1
+        for user in User.objects.filter(is_active=False, last_login__lt=time_threshhold):
+            user.delete()
+            del_count += 1
 
         logging.getLogger("DEBUG").debug('RAN DELDEACTIVES: Deleted %s inactive objects' % del_count)
 

@@ -1,9 +1,13 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
-from django.utils.safestring import mark_safe
 from django.contrib.auth.models import Group
+from django.contrib.sites.models import Site
 from allauth.account.models import EmailAddress
+from django.utils.safestring import mark_safe
+from posts.models import Comment, Reply
+
+User = get_user_model()
 
 
 # Customize the display and change forms for User
@@ -11,10 +15,12 @@ class UserAdmin(UserAdmin):
     filter_horizontal = ('groups', 'user_permissions')
 
     def users_comments(self):
-        return mark_safe('<a href="/admin/posts/comment/?author__id__exact=%d">%s</a>' % (self.id, self.username + '\'s comments'))
+        comment_count = len(Comment.objects.filter(author=self).all())
+        return mark_safe('<a href="/admin/posts/comment/?author__id__exact=%d">%s</a>' % (self.id, str(comment_count) + ' comments'))
 
     def users_replies(self):
-        return mark_safe('<a href="/admin/posts/reply/?author__id__exact=%d">%s</a>' % (self.id, self.username+ '\'s replies'))
+        reply_count = len(Reply.objects.filter(author=self).all())
+        return mark_safe('<a href="/admin/posts/reply/?author__id__exact=%d">%s</a>' % (self.id, str(reply_count) + ' replies'))
 
     list_display = ['username', 'first_name', 'email', users_comments, users_replies]
 
@@ -26,5 +32,5 @@ admin.site.register(User, UserAdmin)
 # Unregister unneeded models
 admin.site.unregister(EmailAddress)
 admin.site.unregister(Group)
-
+admin.site.unregister(Site)
 

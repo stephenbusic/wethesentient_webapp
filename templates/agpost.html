@@ -4,12 +4,11 @@
 
 	{# HTML for Blog Post #}
 	<section class="post">
-		<input type="hidden" id="agpost_pk" pk="{{ pk }}">
 
 		{# Display post title & author, as well as a message if the post is not public (unlisted) #}
 		<header class="major">
 			<h1>{{ agpost.title }}</h1>
-			<h4 class="lighten">By {{ agpost.author|safe }}</h4>
+			<br clear="both"><header class="major"><span class="date lighten">{{ agpost.author|safe }}</span></header>
 		</header>
 
 		{# Display post image in right corner of text #}
@@ -33,7 +32,7 @@
 		{% endif %}
 
 		{# Add date the post was created to bottom of the post #}
-		<br clear="both"><header class="major"><span class="date">{{ agpost.date }}</span></header>
+		<br clear="both"><header class="major"><span class="date">{{ agpost.date|date:'M d, Y' }}</span></header>
 
 		{# COMMENT SECTION #}
 		{% include 'forms/comment_form.html' with user_has_comment_perms=perms.posts.can_comment_or_reply %}
@@ -58,18 +57,16 @@
 		$(document).ready(function() {
 
 			// create an AJAX call
-			var pk_element = document.getElementById("agpost_pk");
-			var pk = pk_element.getAttribute("pk");
 			$.ajax({
 
 				type: "post",
 				url: "{% url 'posts:record_post_view' %}",
 				data: {
-					'agpost_pk': pk,
+					'agpost_pk': {{ pk }},
 					'csrfmiddlewaretoken': '{{ csrf_token }}'
 				},
 				error: function(data) {
-					console.log("Ajax error occured while trying to record page view.")
+					console.log("Ajax error occured while trying to count page view.")
 				}
 			});
 		});

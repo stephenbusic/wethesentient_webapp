@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-
 from .models import AGPost, Comment, Reply, AGPostView
 
 
@@ -28,12 +27,8 @@ class ReplyAdmin(admin.ModelAdmin):
     exclude = ('pinned', 'created_on', 'deactivated_on',)
     list_filter = ('author',)
 
-class AgpostViewAdmin(admin.ModelAdmin):
-    list_filter = ('agpost',)
-
 
 # Register models to admin page
 admin.site.register(AGPost, AGPostAdmin)
-admin.site.register(AGPostView, AgpostViewAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Reply, ReplyAdmin)

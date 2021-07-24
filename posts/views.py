@@ -1,5 +1,6 @@
 import json
 import requests
+from django.db.models.functions import TruncDay
 from django.utils import timezone
 from django.conf import settings
 from django.core.paginator import Paginator
@@ -7,7 +8,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from posts.models import AGPostView, Reply
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Count
 from users.user_email_utility import send_reply_notice
 from .forms import CommentForm, DropdownForm
 from .models import AGPost
@@ -16,14 +17,14 @@ from .models import AGPost
 # View to display all existing agposts
 def allposts(request, page_num):
     # Get all active agposts
-    listed_agposts = AGPost.objects.filter(unlisted=False).order_by('date')
+    listed_agposts = AGPost.objects.filter(unlisted=False).order_by('-date')
 
     # Create paginator to show 4 posts per page
     paginator = Paginator(listed_agposts, 4)
     page_obj = paginator.get_page(page_num)
 
     # Render all agposts page
-    return render(request, 'allposts.html', {'active_agposts': page_obj, })
+    return render(request, 'allposts.html', {'listed_agposts': page_obj, })
 
 
 # View to show a given agpost
@@ -228,6 +229,30 @@ def record_post_view(request):
         data['success'] = True
 
         return JsonResponse(data)
+
+    error_msg = "Sorry! Post not found :("
+    return render(request, 'msgpage.html', {'msg': error_msg})
+
+
+# View called by ajax to fetch view data
+def get_viewchart_data(request):
+
+    if request.is_ajax():
+
+        duration = 30
+        now = timezone.now()
+        time_threshhold = now - timezone.timedelta(days=duration)
+
+        # Aggregate new views for the last x number of days
+        agpost_views = (
+            AGPostView.objects.filter(created_on__gt=time_threshhold)
+            .annotate(date=TruncDay("created_on"))
+            .values("date")
+            .annotate(y=Count("id"))
+            .order_by("-date")
+        )
+        print(agpost_views)
+        return JsonResponse({'chart_data': list(agpost_views)})
 
     error_msg = "Sorry! Post not found :("
     return render(request, 'msgpage.html', {'msg': error_msg})

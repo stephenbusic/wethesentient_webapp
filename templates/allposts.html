@@ -14,9 +14,9 @@
 	{% endcomment %}
 
 	{# If there are any posts, then iterate through them and add them to a square on the webpage #}
-	{% if active_agposts.object_list.count > 0 %}
+	{% if listed_agposts %}
 		<section class="posts">
-			{% for agpost in active_agposts %}
+			{% for agpost in listed_agposts %}
 				<article>
 
 					{# Add post title, image, and desciption to square #}

@@ -1,4 +1,6 @@
-from django.http import Http404
+from django.db.models import Count
+from django.db.models.functions import TruncDay
+from django.http import Http404, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
@@ -161,4 +163,30 @@ def hasnt_timed_out(link_date, max_age):
     today_date = int(timezone.now().today().strftime("%Y%m%d"))
     delta = today_date - link_date
     return 0 <= delta <= max_age
+
+
+# View called by ajax to fetch sub data
+def get_subchart_data(request):
+
+    if request.is_ajax():
+
+        duration = 30
+        now = timezone.now()
+        time_threshhold = now - timezone.timedelta(days=duration)
+
+        # Aggregate new subscribers for the last x number of days
+        subs = (
+            Subscriber.objects.filter(date_created__gt=time_threshhold)
+            .annotate(date=TruncDay("date_created"))
+            .values("date")
+            .annotate(y=Count("id"))
+            .order_by("-date")
+        )
+        return JsonResponse({'chart_data': list(subs)})
+
+    error_msg = "Sorry! Post not found :("
+    return render(request, 'msgpage.html', {'msg': error_msg})
+
+
+
 

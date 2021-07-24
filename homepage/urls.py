@@ -8,4 +8,5 @@ urlpatterns = [
     path('privacy-policy', show_policy, name="show_policy"),
     path('confirm-subscription', sub_confirmation, name='sub_confirmation'),
     path('unsubscribe', unsub_confirmation, name='unsub_confirmation'),
+    path('ajax/get_sub_data', get_subchart_data, name="get_subchart_data"),
 ]
