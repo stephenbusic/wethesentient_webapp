@@ -36,7 +36,7 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-    ALLOWED_HOSTS = ['www.aaahhhghosts.com']
+    ALLOWED_HOSTS = ['www.wethesentient.com']
 else:
     ALLOWED_HOSTS = ['127.0.0.1']
 
