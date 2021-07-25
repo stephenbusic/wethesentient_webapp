@@ -9,72 +9,64 @@ from homepage import sub_email_utility
 from homepage.encryption_utility import *
 from homepage.forms import SubscriberForm
 from homepage.models import Subscriber
-import requests, json
+import json
+import requests
 
 
 def show_homepage(request):
 
     # If user is logged in and makes post request
-    if request.method == 'POST':
+    if request.method == 'POST' and pass_recaptcha(request):
 
-        # If new comment is created
+        # If new subscription is created
         if 'create_subscription' in request.POST:
-            sub_form = SubscriberForm(data=request.POST)
-
-            # If comment form is valid, try and get reCaptcha score
-            if sub_form.is_valid():
-                try:
-                    result = requests.post(
-                        'https://www.google.com/recaptcha/api/siteverify',
-                        data={
-                            'secret': settings.RECAPTCHA_SECRET_KEY,
-                            'response': request.POST.get("g-recaptcha-response"),
-                        }
-                    ).content
-                except ConnectionError:  # Handle your error state
-                    result = ""
-
-                # Will throw ValueError if we can't parse Google's response
-                result = json.loads(result)
-
-                # If recaptcha state is success and score is good, save comment
-                if result['success'] and result['score'] >= 0.5:
-
-                    # Get data from homepage
-                    post_data = request.POST.copy()
-                    email = post_data.get("email", None)
-
-                    # Make sure email is valid
-                    error_msg = validation_utility.validate_email(email)
-                    if error_msg:
-                        return render(request, 'msgpage.html', {'msg': error_msg})
-
-                    # Check if user already exists for this email or username
-                    if not Subscriber.objects.filter(email=email):
-
-                        # Create token and build confirm link
-                        token = encrypt(email + "-" + timezone.now().today().strftime("%Y%m%d"))
-                        subscription_confirmation_url = request.build_absolute_uri(
-                            reverse('homepage:sub_confirmation')) + "?token=" + token
-
-                        # Send confirmation email and return status
-                        if sub_email_utility.send_subscription_email(email, subscription_confirmation_url):
-                            msg = "Thanks for subscribing. Check inbox to confirm <3"
-                            foot = "Might be in your junk folder btw."
-                        else:
-                            msg = "Sorry. Sending confirmation email failed. Try again later!"
-                            foot = ""
-
-                        return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
-
-                    else:
-                        msg = "Email is already subscribed!"
-                        foot = "If you are trying to unsubscribe, look for a unsubscription link at the bottom of any of my emails."
-                        return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
+            return process_sub_form(request)
 
     # If form invalid, return to homepage
     site_key = settings.RECAPTCHA_SITE_KEY
     return render(request, 'index.html', {'site_key': site_key})
+
+
+# Function for processing sub form. Separate so that
+# it can be used on the agpost page too.
+def process_sub_form(request):
+
+    sub_form = SubscriberForm(data=request.POST)
+
+    # If comment form is valid, try and get reCaptcha score
+    if sub_form.is_valid():
+
+        # Get data from homepage
+        post_data = request.POST.copy()
+        email = post_data.get("email", None)
+
+        # Make sure email is valid
+        error_msg = validation_utility.validate_email(email)
+        if error_msg:
+            return render(request, 'msgpage.html', {'msg': error_msg})
+
+        # Check if user already exists for this email or username
+        if not Subscriber.objects.filter(email=email):
+
+            # Create token and build confirm link
+            token = encrypt(email + "-" + timezone.now().today().strftime("%Y%m%d"))
+            subscription_confirmation_url = request.build_absolute_uri(
+                reverse('homepage:sub_confirmation')) + "?token=" + token
+
+            # Send confirmation email and return status
+            if sub_email_utility.send_subscription_email(email, subscription_confirmation_url):
+                msg = "Thanks for subscribing. Check inbox to confirm <3"
+                foot = "Might be in your junk folder btw."
+            else:
+                msg = "Sorry. Sending confirmation email failed. Try again later!"
+                foot = ""
+
+            return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
+
+        else:
+            msg = "Email is already subscribed!"
+            foot = "If you are trying to unsubscribe, look for a unsubscription link at the bottom of any of my emails."
+            return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
 
 def show_policy(request):
@@ -158,6 +150,27 @@ def unsub_confirmation(request):
     return render(request, 'msgpage.html', {'msg': msg})
 
 
+# Function to check if a given request passes recaptcha
+def pass_recaptcha(request):
+    try:
+        result = requests.post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            data={
+                'secret': settings.RECAPTCHA_SECRET_KEY,
+                'response': request.POST.get("g-recaptcha-response"),
+            }
+        ).content
+    except ConnectionError:  # Handle your error state
+        result = ""
+
+    # Will throw ValueError if we can't parse Google's response
+    result = json.loads(result)
+
+    # If recaptcha state is success and score is good, return true.
+    # Else, return false.
+    return result['success'] and result['score'] >= 0.5
+
+
 # Method to determine if link has timed out
 def hasnt_timed_out(link_date, max_age):
     today_date = int(timezone.now().today().strftime("%Y%m%d"))
@@ -182,7 +195,9 @@ def get_subchart_data(request):
             .annotate(y=Count("id"))
             .order_by("-date")
         )
-        return JsonResponse({'chart_data': list(subs)})
+        total_subs = len(Subscriber.objects.all())
+        return JsonResponse({'chart_data': list(subs),
+                             'total_subs': total_subs})
 
     error_msg = "Sorry! Post not found :("
     return render(request, 'msgpage.html', {'msg': error_msg})

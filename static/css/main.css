@@ -383,8 +383,13 @@ input, select, textarea {
         display:none;
     }
 
+    .glow {
+        /*text-shadow: 0 0 42px white;*/
+        font-weight: bold;
+    }
+
     .lighten {
-        color: #bababa !important;
+        color: #adadad !important;
         font-family: "Source Sans Pro", Helvetica, sans-serif;
 		font-weight: 900;
 		line-height: 2;
@@ -3374,8 +3379,8 @@ input, select, textarea {
 		@media screen and (orientation: portrait) {
 
 			#wrapper > .bg {
-			    background-position: left top;
-				background-size: auto,								auto,														auto 300%;
+			    background-position: right top;
+				background-size: auto, auto, auto 300%;
 			}
 
 		}
@@ -3409,7 +3414,7 @@ input, select, textarea {
 		cursor: default;
 		text-align: center;
 		z-index: 1;
-		min-height: 85vh;
+		min-height: 90vh;
 	}
 
 		#intro input, #intro select, #intro textarea {
@@ -3552,7 +3557,7 @@ input, select, textarea {
 
 			#intro {
 				padding: 4rem 4rem 2rem 4rem ;
-				min-height: 90vh;
+
 			}
 
 				#intro p br {
@@ -3586,7 +3591,6 @@ input, select, textarea {
 				#intro .actions {
 					display: none;
 				}
-
 		}
 
 /* Header */
@@ -3901,6 +3905,11 @@ input, select, textarea {
 					padding: 3rem 4rem 2rem 4rem ;
 				}
 
+				#wrapper > .bg {
+			        background-position: right top;
+				    background-size: auto, auto, auto 400%;
+			    }
+
 			}
 
 			@media screen and (max-width: 736px) {
@@ -4049,8 +4058,13 @@ input, select, textarea {
 
 			/* Reduce space above and below author */
 			.lighten {
-                line-height: 0.5;
+                line-height: 1;
             }
+
+            #wrapper > .bg {
+			    background-position: right top;
+				background-size: auto, auto, auto 185%;
+			}
 		}
 
 /* Footer */

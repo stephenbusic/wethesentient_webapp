@@ -14,7 +14,7 @@ from django.conf import settings
 
 def send_email(email, subject, html_content, text_content):
 
-    #Send email with subject as both html and plain text
+    # Send email with subject as both html and plain text
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
     msg.attach_alternative(html_content, "text/html")
     try:
@@ -27,12 +27,12 @@ def send_email(email, subject, html_content, text_content):
 
 def send_subscription_email(email, sub_confirmation_url):
 
-    #Build dictionary to store email-related variables
+    # dictionary to store email-related variables
     data = dict()
     data["confirmation_url"] = sub_confirmation_url
     template = get_template("email_templates/sub_email.html")
 
-    #Render email text (html and plain) and set subjet
+    # Render email text (html and plain) and set subjet
     html_content = template.render(data)
     text_content = strip_tags(html_content)
     subject = "Confirm Subscription"
@@ -46,7 +46,7 @@ def send_unsub_email(email, username, unsub_confirmation_url):
     data["confirmation_url"] = unsub_confirmation_url
     template = get_template("email_templates/deletion_email.html")
 
-    #Render email text (html and plain) and set subjet
+    # Render email text (html and plain) and set subjet
     html_content = template.render(data)
     text_content = strip_tags(html_content)
     subject = "Cancel Subscription"

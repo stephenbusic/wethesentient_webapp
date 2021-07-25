@@ -1,17 +1,18 @@
-import json
-import requests
-from django.db.models.functions import TruncDay
-from django.utils import timezone
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.db.models import Prefetch, Count
+from django.db.models.functions import TruncDay
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone
+from homepage.views import process_sub_form
 from posts.models import AGPostView, Reply
-from django.db.models import Prefetch, Count
 from users.user_email_utility import send_reply_notice
 from .forms import CommentForm, DropdownForm
 from .models import AGPost
+import json
+import requests
 
 
 # View to display all existing agposts
@@ -47,122 +48,132 @@ def show_post(request, slug):
             )
         )
 
-        # Get current user
-        user = request.user
+        # First, determine if sub_form was submitted. Before this can
+        # be done, we need determine if the request is valid by checking if:
+        # 1) request is of method POST
+        # 2) request passes recaptcha test
+        if request.method == 'POST' and pass_recaptcha(request):
+            print("here??")
+            # CREATE NEW SUB
+            if 'create_subscription' in request.POST:
 
-        # Proceed to check for a new comment/reply/edit
-        # if and only if 4 conditions are met:
-        # 1) user is logged in
-        # 2) user has permission to comment/reply/edit
-        # 3) request is of method POST
-        # 4) request passes recaptcha test
-        if user.is_authenticated and user.has_perm('posts.can_comment_or_reply') and \
-                request.method == 'POST' and pass_recaptcha(request):
+                # If new subscription is being created, then
+                # we're done - just hand off request to homepage
+                return process_sub_form(request)
 
-            # CREATE NEW COMMENT
-            if 'is_comment_form' in request.POST:
-                comment_form = CommentForm(data=request.POST)
+            # Else, if not new sub, move on by getting current user
+            user = request.user
 
-                # If comment form is valid, try and get reCaptcha score
-                if comment_form.is_valid():
-                    # Create comment object but don't save to database yet
-                    new_comment = comment_form.save(commit=False)
+            # Proceed to check for a new comment/reply/edit
+            # if and only if 2 user conditions are met:
+            # 1) user is logged in
+            # 2) user has permission to comment/reply/edit
+            if user.is_authenticated and user.has_perm('posts.can_comment_or_reply'):
 
-                    # Assign the current post to the comment
-                    new_comment.agpost = req_agpost
-                    new_comment.author = user
+                # CREATE NEW COMMENT
+                if 'is_comment_form' in request.POST:
+                    comment_form = CommentForm(data=request.POST)
 
-                    # Save the comment to the database
-                    new_comment.save()
-
-            elif 'is_dropdown_form' in request.POST:
-
-                # Now knowing a reply form has been submitted (otherwise, how would there
-                # have been a matching key?), get the data from the submitted reply form
-                dropdown_form = DropdownForm(data=request.POST)
-                if dropdown_form.is_valid():
-
-                    # Figure out which comment/reply the dropdown form belongs to
-                    id = request.POST.get('is_dropdown_form')
-                    comment_num, reply_num, *_ = [int(n) for n in id.split('_')]
-
-                    # Get parent comment (and the parent reply, if form belonged to reply)
-                    # Also, determine which is the parent: a comment or a reply.
-                    # If reply_num is 0, that means a comment is the parent
-                    # because the dropdown form was submitted on a comment.
-                    # But if reply_num > 0, then parent is a reply.
-                    parent_comment = active_comments[comment_num]
-                    active_replies = parent_comment.replies.filter(active=True, author__is_active=True).all()
-                    if reply_num > 0:
-                        parent_reply = active_replies[reply_num - 1]
-                        parent = parent_reply
-                    else:
-                        parent = parent_comment
-
-                    # Get action performed by dropdown form
-                    action = request.POST.get('action', '')
-
-                    # CREATE NEW REPLY
-                    if action == 'create_reply':
-
-                        # Create reply object but don't save to database yet
-                        new_reply = dropdown_form.save(commit=False)
+                    # If comment form is valid, try and get reCaptcha score
+                    if comment_form.is_valid():
+                        # Create comment object but don't save to database yet
+                        new_comment = comment_form.save(commit=False)
 
                         # Assign the current post to the comment
-                        new_reply.comment = parent_comment
-                        new_reply.author = user
-
-                        # Also, add handle
-                        new_reply.handle_user = parent.author
+                        new_comment.agpost = req_agpost
+                        new_comment.author = user
 
                         # Save the comment to the database
-                        new_reply.save()
+                        new_comment.save()
 
-                        # Check if replier is author of original comment
-                        user_is_par_comment_author = (user == parent_comment.author)
-                        user_is_par_reply_author = (user == parent_comment.author)
+                elif 'is_dropdown_form' in request.POST:
 
-                        # If user is not author of the parent object, and
-                        # the parent is set for notifications, send notice
-                        # to the author of the parent object
-                        if parent.author != user and parent.notify:
-                            send_reply_notice(parent, new_reply)
+                    # Now knowing a reply form has been submitted (otherwise, how would there
+                    # have been a matching key?), get the data from the submitted reply form
+                    dropdown_form = DropdownForm(data=request.POST)
+                    if dropdown_form.is_valid():
 
-                        # If the author of the parent object is not the
-                        # author of the parent comment, then the author of
-                        # the parent comment has not been notified yet. So,
-                        # notify them too if the parent comment is set
-                        # for notifications.
-                        if parent.author != parent_comment.author and parent_comment.notify:
-                            send_reply_notice(parent_comment, new_reply)
+                        # Figure out which comment/reply the dropdown form belongs to
+                        id = request.POST.get('is_dropdown_form')
+                        comment_num, reply_num, *_ = [int(n) for n in id.split('_')]
 
-                    # EDIT COMMENT/REPLY
-                    elif action == 'create_edit':
+                        # Get parent comment (and the parent reply, if form belonged to reply)
+                        # Also, determine which is the parent: a comment or a reply.
+                        # If reply_num is 0, that means a comment is the parent
+                        # because the dropdown form was submitted on a comment.
+                        # But if reply_num > 0, then parent is a reply.
+                        parent_comment = active_comments[comment_num]
+                        active_replies = parent_comment.replies.filter(active=True, author__is_active=True).all()
+                        if reply_num > 0:
+                            parent_reply = active_replies[reply_num - 1]
+                            parent = parent_reply
+                        else:
+                            parent = parent_comment
 
-                        # Proceed only if current logging in user's name and email
-                        # matches the author's of the reply the user is trying to edit.
-                        # In other words, make sure if user is editing their own reply.
-                        if user == parent.author:
+                        # Get action performed by dropdown form
+                        action = request.POST.get('action', '')
 
-                            # Check if edit is to delete the reply. Delete it if so
-                            if request.POST.get('is_deletion', '') == 'true':
-                                parent.active = False
-                                parent.deactivated_on = timezone.now()
-                                parent.save()
+                        # CREATE NEW REPLY
+                        if action == 'create_reply':
 
-                            # If not to delete, then save changes
-                            else:
+                            # Create reply object but don't save to database yet
+                            new_reply = dropdown_form.save(commit=False)
 
-                                # Create reply object but don't save to database
-                                edit = dropdown_form.save(commit=False)
+                            # Assign the current post to the comment
+                            new_reply.comment = parent_comment
+                            new_reply.author = user
 
-                                # Update parent reply to have the body of the edit
-                                parent.body = edit.body
-                                parent.edited = True
-                                parent.save()
+                            # Also, add handle
+                            new_reply.handle_user = parent.author
 
-            # Reload page at the comment section
-            return HttpResponseRedirect(reverse('posts:show', kwargs={'slug': slug}) + '#comments')
+                            # Save the comment to the database
+                            new_reply.save()
+
+                            # Check if replier is author of original comment
+                            user_is_par_comment_author = (user == parent_comment.author)
+                            user_is_par_reply_author = (user == parent_comment.author)
+
+                            # If user is not author of the parent object, and
+                            # the parent is set for notifications, send notice
+                            # to the author of the parent object
+                            if parent.author != user and parent.notify:
+                                send_reply_notice(parent, new_reply)
+
+                            # If the author of the parent object is not the
+                            # author of the parent comment, then the author of
+                            # the parent comment has not been notified yet. So,
+                            # notify them too if the parent comment is set
+                            # for notifications.
+                            if parent.author != parent_comment.author and parent_comment.notify:
+                                send_reply_notice(parent_comment, new_reply)
+
+                        # EDIT COMMENT/REPLY
+                        elif action == 'create_edit':
+
+                            # Proceed only if current logging in user's name and email
+                            # matches the author's of the reply the user is trying to edit.
+                            # In other words, make sure if user is editing their own reply.
+                            if user == parent.author:
+
+                                # Check if edit is to delete the reply. Delete it if so
+                                if request.POST.get('is_deletion', '') == 'true':
+                                    parent.active = False
+                                    parent.deactivated_on = timezone.now()
+                                    parent.save()
+
+                                # If not to delete, then save changes
+                                else:
+
+                                    # Create reply object but don't save to database
+                                    edit = dropdown_form.save(commit=False)
+
+                                    # Update parent reply to have the body of the edit
+                                    parent.body = edit.body
+                                    parent.edited = True
+                                    parent.save()
+
+                # Reload page at the comment section
+                return HttpResponseRedirect(reverse('posts:show', kwargs={'slug': slug}) + '#comments')
 
         # Define other parameters
         comment_form = CommentForm()
@@ -202,7 +213,7 @@ def pass_recaptcha(request):
 
     # If recaptcha state is success and score is good, return true.
     # Else, return false.
-    return result['success'] == True and result['score'] >= 0.5
+    return result['success'] and result['score'] >= 0.5
 
 
 # View called by ajax to record a page view
@@ -251,8 +262,9 @@ def get_viewchart_data(request):
             .annotate(y=Count("id"))
             .order_by("-date")
         )
-        print(agpost_views)
-        return JsonResponse({'chart_data': list(agpost_views)})
+        total_views = len(AGPostView.objects.all())
+        return JsonResponse({'chart_data': list(agpost_views),
+                             'total_views': total_views})
 
     error_msg = "Sorry! Post not found :("
     return render(request, 'msgpage.html', {'msg': error_msg})

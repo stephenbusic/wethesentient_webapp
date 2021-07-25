@@ -16,6 +16,9 @@
                 // Get sub data
                 var SubData = data;
 
+                // Get and display total subs
+                document.getElementById("total_subs").innerHTML = "TOTAL SUBS: " + SubData['total_subs'];
+
                 // Get element in document to replace with graph
                 const ctx = document.getElementById('SubsChart').getContext('2d');
 
@@ -30,7 +33,7 @@
                     data: {
                         datasets: [
                             {
-                                label: 'New Subscribers',
+                                label: 'Subscribers',
                                 data: SubData['chart_data'],
                                 backgroundColor: 'rgba(66, 245, 72, 0.5)',
                             },
@@ -88,6 +91,9 @@
 
                 // Get sub data
                 var ViewData = data;
+
+                // Get and display total subs
+                document.getElementById("total_views").innerHTML = "TOTAL VIEWS: " + ViewData['total_views'];
 
                 // Get element in document to replace with graph
                 const ctx = document.getElementById('ViewsChart').getContext('2d');

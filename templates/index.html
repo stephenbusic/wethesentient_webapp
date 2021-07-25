@@ -4,10 +4,10 @@
 {% block intro %}
 {# Intro #}
 <div id="intro">
-	<h7>we the sentient</h7>
-	<p>a philosophy blog for conscious creatures</p>
+	<h7 class="glow">we the sentient</h7>
+	<p class="glow">a philosophy blog for conscious life</p>
 	<ul class="actions">
-		<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
+		<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly glow">Continue</a></li>
 	</ul>
 </div>
 {% endblock intro %}
@@ -21,65 +21,30 @@
 			<span class="image left"><img src="{% static 'images/bio_pic.jpg' %}" alt="" /></span>
 			My name is Stephen. I go by Scuub (like Scoob, but spelled with two U's).
 			I'm a Ginger kid who skateboards, does amateur graffiti, and writes about philosophy.
-			<i>AAAHHH ghosts</i> is a weird name for a blog, I know. It was partly spat out of a randomized
-			band name generator I programmed. I make weird music too, speaking of which. Sometimes I'll post
+			I make weird music too, speaking of which. Sometimes I'll post
 			about that stuff here. Mostly this website is a dumping ground for my philosophical
 			hot takes. I tend to write most about Ethics, Philosophy of Religion, and Metaphysics.
-			I believe studying philosophy can help us make the world a kinder place for all sentient
+			I think studying philosophy can help us make the world a kinder place for all sentient
 			life, regardless of their race, gender identity, sexual orientation, nationality,
 			or species. Studying ethics continues to inform me as an activist not just for pressing
 			human rights issues (racial justice, equal rights for sexual and gender minorities, and so
-			on), but also for non-human animal rights (go vegan!). Anyways, thanks for visiting my blog.
+			on), but also for non-human animal rights (go vegan!). Thanks for visiting my blog.
 			I don't have many posts up yet, but feel free to browse and maybe even leave a comment
 			or two. Much love <3
 		</p>
-
-
 	</section>
 
 	<section>
-		<h2>New posts every-so-often-ish</h2>
-		<p>Get notified about the latest posts!</p>
-		<form method="post" id="subscription_form">
-			{% csrf_token %}
-
-			<div class="row gtr-uniform">
-
-				<div class="col-5"><input type="email" class="col 5" name="email" placeholder="Email" required></div>
-
-				<div class="col-1"><input type="submit"></div>
-
-			</div>
-			<input type="hidden" name="g-recaptcha-response" id='recaptcha'>
-			<input type="hidden" name="create_subscription" id="create_subscription" value="created">
-		</form>
-
+		{% include 'forms/sub_form.html' %}
 		<h2>Contact</h2>
-		<p><h3 style="display: inline;">my email: </h3>aaahhhghosts@gmail.com</p>
+		<p><h3 style="display: inline;">my email: </h3>scuub@wethesentient.com</p>
 	</section>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
 	<script type="text/javascript">
-
-		// When reCaptcha v3 is ready, add verifications to each form submit button
-		grecaptcha.ready(function() {
-
-			// Add reCaptcha Verficiation to the static comment form
-			$("#subscription_form").submit(function(e) {
-                var form = this;
-
-                e.preventDefault();
-                grecaptcha.execute('{{ site_key }}', {action: 'submit'}).then(function(token) {
-
-					// Add token to hidden recaptcha input field
-					document.getElementById("recaptcha").value = token;
-					form.disabled = true;
-                    form.submit();
-   					form.reset();
-            	});
-            });
-		});
+		var site_key="{{ site_key }}"
 	</script>
+	<script type="text/javascript" src="{% static 'js/sub_form_recaptcha.js' %}"></script>
 {% endblock content %}
 

@@ -29,6 +29,7 @@ class ReplyAdmin(admin.ModelAdmin):
 
 
 # Register models to admin page
+admin.site.register(AGPostView)
 admin.site.register(AGPost, AGPostAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Reply, ReplyAdmin)

@@ -14,14 +14,17 @@
 </script>
 <script src="{% static 'js/admin_index_charts.js' %}"></script>
 
-
-<h3 style="font-size: 175%;">Analytics</h3>
+<h3 style="font-size: 250%;">Analytics</h3>
 <div id="graphs">
     <div class="chart-container left" style="flex: 1 1;">
         <canvas style="margin-bottom: 30px;" id="SubsChart"></canvas>
+        <h3 id="total_subs" style="font-size: 175%;"></h3>
+        <br>
     </div>
     <div class="chart-container" style="flex: 1 1;">
         <canvas style="margin-bottom: 30px;" id="ViewsChart"></canvas>
+        <h3 id="total_views" style="font-size: 175%;"></h3>
+        <br>
     </div>
 </div>
 {{ block.super }}
