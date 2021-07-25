@@ -1,2 +1,4 @@
 # Ignore sqlite3 database for testing
+venv/
 db.sqlite3
+*.pyc
