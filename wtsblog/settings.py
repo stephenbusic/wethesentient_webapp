@@ -88,7 +88,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'agwebsite.urls'
+ROOT_URLCONF = 'wtsblog.urls'
 
 TEMPLATES = [
     {
@@ -112,7 +112,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-WSGI_APPLICATION = 'agwebsite.wsgi.application'
+WSGI_APPLICATION = 'wtsblog.wsgi.application'
 
 
 # Use MySql if in Production
