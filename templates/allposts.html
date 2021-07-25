@@ -47,22 +47,22 @@
 		<div class="paginator">
 
 			{# Print current page and how many pages there are total #}
-			<h5 class="current">Page {{ active_agposts.number }} of {{ active_agposts.paginator.num_pages }}</h5>
+			<h5 class="current">Page {{ listed_agposts.number }} of {{ listed_agposts.paginator.num_pages }}</h5>
 			<br>
 
 			{# Page navigation #}
 			<span class="step-links">
 
 				{# If there is a previous page, add "prev" button #}
-				{% if active_agposts.has_previous %}
-					<a class="button" href="{{ active_agposts.previous_page_number }}">prev</a>
+				{% if listed_agposts.has_previous %}
+					<a class="button" href="{{ listed_agposts.previous_page_number }}">prev</a>
 				{% else %}
 					<input type="button" value="prev" disabled="true"/>
 				{% endif %}
 
 				{# If there is a next page, add "next" button #}
-				{% if active_agposts.has_next %}
-					<a class="button" href="{{ active_agposts.next_page_number }}">next</a>
+				{% if listed_agposts.has_next %}
+					<a class="button" href="{{ listed_agposts.next_page_number }}">next</a>
 				{% else %}
 					<input type="button" value="next" disabled="true"/>
 				{% endif %}
