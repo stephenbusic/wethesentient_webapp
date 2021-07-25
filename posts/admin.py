@@ -28,8 +28,15 @@ class ReplyAdmin(admin.ModelAdmin):
     list_filter = ('author',)
 
 
+class AGPostViewAdmin(admin.ModelAdmin):
+    fields = ('agpost', 'ip', 'session', 'created_on',)
+    readonly_fields = ('created_on',)
+    list_display = ('agpost', 'created_on', 'ip', 'session',)
+    list_filter = ('agpost',)
+
+
 # Register models to admin page
-admin.site.register(AGPostView)
+admin.site.register(AGPostView, AGPostViewAdmin)
 admin.site.register(AGPost, AGPostAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Reply, ReplyAdmin)
