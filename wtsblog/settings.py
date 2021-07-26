@@ -48,6 +48,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = config.gmail['address']
 EMAIL_HOST_PASSWORD = config.gmail['pword']
 
+SECONDARY_EMAIL = config.gmail['second_address']
 
 # Application definition
 INSTALLED_APPS = [

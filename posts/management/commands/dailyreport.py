@@ -20,6 +20,7 @@ class Command(BaseCommand):
 
         today = timezone.now().today()
         scuubs_email = settings.EMAIL_HOST_USER
+        personal_email = settings.SECONDARY_EMAIL
 
         todays_subs = Subscriber.objects.filter(date_created__date=today)
         todays_users = User.objects.filter(date_joined__date=today)
@@ -63,8 +64,9 @@ class Command(BaseCommand):
             subject += " EMPTY"
 
         was_sent = send_email(scuubs_email, subject, html_content, text_content)
+        secondary_was_sent = send_email(personal_email, subject, html_content, text_content)
 
-        if was_sent:
+        if was_sent and secondary_was_sent:
             logging.getLogger("DEBUG").debug('Daily report sent')
             self.stdout.write(self.style.SUCCESS('Daily report sent'))
         else:
