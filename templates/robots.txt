@@ -1,0 +1,5 @@
+User-agent: *
+
+Disallow: /confirm-subscription
+Disallow: /users/disable-response-notifications
+Disallow: /users/confirm-deletion

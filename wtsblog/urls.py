@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 app_name = 'root'
 
@@ -14,6 +15,7 @@ urlpatterns = [
     path('posts/', include('posts.urls')),
     path('veganism/', include('veganism.urls')),
     path('users/', include('users.urls')),
+    path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
 
 admin.site.site_title = 'admin | WETHESENTIENT'

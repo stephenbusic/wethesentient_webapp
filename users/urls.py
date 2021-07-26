@@ -5,7 +5,7 @@ app_name = 'users'
 
 urlpatterns = [
     # Unnotify for a users comments and replies
-    path('disable-response-notifcations', unnotify_confirmation, name='unnotify_confirmation'),
+    path('disable-response-notifications', unnotify_confirmation, name='unnotify_confirmation'),
 
     # Handle user requests to delete account
     path('request-deletion', request_deletion, name='request_deletion'),
