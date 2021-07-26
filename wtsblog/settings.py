@@ -120,12 +120,12 @@ if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': config.AGmySQL['name'],
-            'USER': config.AGmySQL['user'],
-            'PASSWORD': config.AGmySQL['pword'],
-            'HOST': config.AGmySQL['host'],
+            'NAME': config.wtsmysql['name'],
+            'USER': config.wtsmysql['user'],
+            'PASSWORD': config.wtsmysql['pword'],
+            'HOST': config.wtsmysql['host'],
             'TEST': {
-                'NAME': config.AGmySQL['testname'],
+                'NAME': config.wtsmysql['testname'],
             },
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
