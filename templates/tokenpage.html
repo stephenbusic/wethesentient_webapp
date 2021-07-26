@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post" id="email_token_submit_form">
+    <h2>{{ msg }}</h2>
+    {% csrf_token %}
+    <ul class="actions">
+        <li><input type="submit" value="Confirm"></li>
+    </ul>
+    <input type="hidden" name="g-recaptcha-response" id="recaptcha">
+    <input type="hidden" name="email_token_value" value="{{ email_token }}">
+</form>
+<br>
+
+{# recaptcha for token confirm page #}
+<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
+<script type="text/javascript">
+
+    // When reCaptcha v3 is ready, add verifications to each form submit button
+    grecaptcha.ready(function() {
+
+        // Add reCaptcha Verficiation to the static comment form
+        $("#email_token_submit_form").submit(function(e) {
+            var form = this;
+
+            e.preventDefault();
+            grecaptcha.execute("{{ site_key }}", {action: 'submit'}).then(function(token) {
+
+                // Add token to hidden recaptcha input field
+                document.getElementById("recaptcha").value = token;
+                form.disabled = true;
+                form.submit();
+            });
+        });
+    });
+</script>
+{% endblock content %}

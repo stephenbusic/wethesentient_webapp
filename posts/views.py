@@ -9,14 +9,14 @@ from django.utils import timezone
 from homepage.views import process_sub_form
 from posts.models import AGPostView, Reply
 from users.user_email_utility import send_reply_notice
+from common.util.recaptcha_utility import pass_recaptcha
 from .forms import CommentForm, DropdownForm
 from .models import AGPost
-import json
-import requests
 
 
 # View to display all existing agposts
 def allposts(request, page_num):
+
     # Get all active agposts
     listed_agposts = AGPost.objects.filter(unlisted=False).order_by('-date')
 
@@ -193,27 +193,6 @@ def find_agpost(slug):
         return AGPost.objects.get(slug=slug)
     except AGPost.DoesNotExist:
         return None
-
-
-# Function to check if a given request passes recaptcha
-def pass_recaptcha(request):
-    try:
-        result = requests.post(
-            'https://www.google.com/recaptcha/api/siteverify',
-            data={
-                'secret': settings.RECAPTCHA_SECRET_KEY,
-                'response': request.POST.get("g-recaptcha-response"),
-            }
-        ).content
-    except ConnectionError:  # Handle your error state
-        result = ""
-
-    # Will throw ValueError if we can't parse Google's response
-    result = json.loads(result)
-
-    # If recaptcha state is success and score is good, return true.
-    # Else, return false.
-    return result['success'] and result['score'] >= 0.5
 
 
 # View called by ajax to record a page view

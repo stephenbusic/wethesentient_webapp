@@ -3,20 +3,22 @@
 <div style="padding: 20px; background: #fafafa;font-size:15px;">
     Hey {{ first_name }}!<br>
     <br>
-    On the post "{{ agpost_title }}", {{ replier_name }} replied to your comment shown below:
+    Someone replied to a comment or reply you left on the post "{{ agpost_title }}".<br>
+    <br>
+    You wrote:
     <br>
     <p><i>{{ parent_body }}</i></p>
     <br>
-    Here's what they said in response:
+    Here's what {{ replier_name }} said in response:
     <br>
     <p><i>{{ reply_body }}</i></p>
     <br>
-    To reply back, visit the comment section here:
+    To join the conversation, visit the comment section here:
     <a href="{{ post_url }}#comments">{{ post_url }}#comments</a>.<br>
     <br>
     <br>
     <div class="footer">
-        Don't want to be notified about future replies to this comment? There's a link for that: <a href="{{ unnotify_url }}">{{ unnotify_url }}#comments</a>
+        Don't want to be notified about future replies to this comment? Here's a link for that: <a href="{{ unnotify_url }}">{{ unnotify_url }}#comments</a>
     </div>
 </div>
 {% endinlinecss %}

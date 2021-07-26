@@ -120,5 +120,6 @@ class CustomSocialSignupForm(SignupForm):
             user.username = username + str(counter)
             counter += 1
 
+        user.last_name = ''
         user.save()
         return user

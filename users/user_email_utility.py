@@ -63,19 +63,18 @@ def send_reply_notice(parent, reply):
     # Render email text (html and plain) and set subject
     html_content = template.render(data)
     text_content = strip_tags(html_content)
-    subject = "Someone Replied to your Comment"
+    subject = "Someone replied to you!"
     return send_email(email, subject, html_content, text_content)
 
 
-def send_deletion_email(email, name, deletion_confirmation_url):
+def send_deletion_email(email, deletion_confirmation_url):
 
-    #Build dictionary to store email-related variables
+    # Build dictionary to store email-related variables
     data = dict()
-    data["first_name"] = name.split(' ')[0]
     data["deletion_url"] = deletion_confirmation_url
     template = get_template("email_templates/deletion_email.html")
 
-    #Render email text (html and plain) and set subjet
+    # Render email text (html and plain) and set subject
     html_content = template.render(data)
     text_content = strip_tags(html_content)
     subject = "Confirm Deletion"

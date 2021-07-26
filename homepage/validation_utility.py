@@ -1,9 +1,10 @@
-import re
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
-def validate_email(email):
-    if email is None:
-        return "Email is required."
-    elif not re.match(r"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", email):
-        return "Invalid Email Address."
-    else:
-        return None
+
+def validateEmail(email):
+    try:
+        validate_email(email)
+        return True
+    except ValidationError:
+        return False

@@ -1,15 +1,16 @@
 {% load inlinecss %}
 {% inlinecss "css/email.css" %}
 <div style="padding: 20px; background: #fafafa;font-size:15px;">
-    Hey {{ first_name }}!<br>
+    Farewell!<br>
     <br>
     <p>
-        Sorry to see you go! Click the link below to deactivate your account. After deactivating your
-        account, if you do not log in again in 5 days, then your account will be permanently deleted.
+        Sorry to see you go. Click the link below to deactivate your account. After deactivating your
+        account, you will have 5 days to login again and restore your account back to normal. If you do not login again
+        within this 5 day period, your account will be permanently deleted.
     </p>
     <p>
-        Please be aware that if this happens,
-        this will also permanently delete any comments and replies you may have written.
+        Please be aware that if you want your comments or replies to be deleted also, you must delete them manually.
+        Otherwise, they will remain on the site as anonymous postings, and your identity will be removed from them.
     </p>
     <a href="{{ deletion_url }}">{{ deletion_url }}</a><br>
     <br>
