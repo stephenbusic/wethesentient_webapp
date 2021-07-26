@@ -48,6 +48,7 @@ class Command(BaseCommand):
         data["users_header"] = str(len(todays_users)) + " users joined today:\n"
         data["comments_header"] = str(len(todays_comments)) + " comments posted today:\n"
         data["replies_header"] = str(len(todays_replies)) + " replies posted today:\n"
+        data["sub_list"] = sub_list
         data["user_list"] = user_list
         data["comment_list"] = comment_list
         data["reply_list"] = reply_list
