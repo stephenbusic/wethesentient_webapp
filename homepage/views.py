@@ -75,6 +75,12 @@ def show_policy(request):
     return render(request, 'policy.html', {})
 
 
+def show_terms(request):
+
+    # Display AAAHHHghosts privacy policy
+    return render(request, 'terms.html', {})
+
+
 def sub_confirmation(request):
 
     # Make sure method is valid

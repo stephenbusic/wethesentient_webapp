@@ -15,8 +15,6 @@
 		<p style="clear: both;"><span class="image right"><img src="{{ agpost.square_thumb.url }}" alt="" /></span>
 
 			{# Display the main content of the post #}
-			{% lorem %}
-			{% lorem %}
 			{{ agpost.body|safe }}
 		</p>
 
@@ -45,7 +43,7 @@
 					{% include 'comment.html' with comment_num=forloop.counter0 %}
 				{% endfor %}
 			{% else %}
-				<h2 class="align-center lighten">No comments yet... be the first!</h2>
+				<p class="align-center">No comments yet... be the first!</p>
 				<br>
 			{% endif %}
 		</div>
