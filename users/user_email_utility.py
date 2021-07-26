@@ -36,13 +36,15 @@ def send_reply_notice(parent, reply):
 
     if isinstance(parent, Comment):
         agpost = parent.agpost
-        type = "comment"
+        obj_type = "comment"
     elif isinstance(parent, Reply):
         agpost = parent.comment.agpost
-        type = "reply"
+        obj_type = "reply"
+    else:
+        return False
 
     # Build unsubscribe link
-    token = encrypt(email + "-" + date_string + "-" + type + "-" + str(agpost.pk))
+    token = encrypt(email + "-" + date_string + "-" + obj_type + "-" + str(agpost.pk))
     unnotify_confirmation_url = urljoin(absolute_path, reverse('users:unnotify_confirmation') + "?token=" + token)
 
     # Build post link

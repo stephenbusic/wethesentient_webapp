@@ -52,8 +52,8 @@ def unnotify_confirmation(request):
                     return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
     except Exception as e:
-        logging.getLogger("error").error("There was an exception while trying to disable notifications for " +
-                                         email + '\'s ' + type + ": " + str(e))
+        logging.getLogger("error").error("There was an exception while trying to disable notifications. request: " +
+                                         str(request) + ' ---ERROR:  ' + str(e))
 
     return render(request, 'msgpage.html', {'msg': "Invalid Link"})
 
