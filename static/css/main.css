@@ -386,11 +386,12 @@ input, select, textarea {
     .glow {
 
 
-        font-weight: bold;
         /*
+        background: rgba(0,0,0,0.5);
+        font-weight: bold;
         text-shadow: 0 0 22px #0EFF50;
         box-shadow: 0 0 22px rgba(0,0,0,0.5);
-        background: rgba(0, 0, 0, 0.5);
+
         padding: 10px;
         */
     }
@@ -3913,9 +3914,21 @@ input, select, textarea {
 					padding: 3rem 4rem 2rem 4rem ;
 				}
 
+				#main_title {
+				    text-shadow: 0 0 15px #0b0b0b;
+				}
+
+				#down_arrow {
+				    display: none;
+				}
+
 				#wrapper > .bg {
 			        background-position: right top;
 				    background-size: auto, auto, auto 400%;
+			    }
+
+			    #intro input[type="button"], #intro button, #intro .button {
+
 			    }
 
 			}
