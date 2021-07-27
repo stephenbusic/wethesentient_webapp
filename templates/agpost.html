@@ -8,7 +8,7 @@
 		{# Display post title & author, as well as a message if the post is not public (unlisted) #}
 		<header class="major">
 			<h1>{{ agpost.title }}</h1>
-			<h4 class="lighten">{{ agpost.author|safe }}</h4>
+			<h3 class="lighten" style="margin-top: 10px;">By {{ agpost.author|safe }}</h3>
 		</header>
 
 		{# Display post image in right corner of text #}
