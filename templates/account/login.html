@@ -19,13 +19,13 @@
       <div class="align-center">
 
           <a href="{% provider_login_url 'facebook' %}?next={% firstof request.path '/' %}" class="fb btn">
-            <i class="fa fa-facebook fa-fw"></i> <b class="socialbtn" >Login with Facebook</b>
+              <b class="socialbtn" >Login with Facebook</b>
           </a>
           <a href="{% provider_login_url 'twitter' %}?next={% firstof request.path '/' %}" class="twitter btn">
-            <i class="fa fa-twitter fa-fw"></i> <b class="socialbtn" >Login with Twitter</b>
+              <b class="socialbtn" >Login with Twitter</b>
           </a>
           <a href="{% provider_login_url 'google' %}?next={% firstof request.path '/' %}" class="google btn">
-            <i class="fa fa-google fa-fw"></i> <b class="socialbtn" >Login with Google+</b>
+              <b class="socialbtn" >Login with Google+</b>
           </a>
       </div>
       <input type="hidden" name="next" value="{{ request.GET.next }}" />
