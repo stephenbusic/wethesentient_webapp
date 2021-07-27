@@ -3405,7 +3405,7 @@ input, select, textarea {
 		-moz-justify-content: -moz-flex-end;
 		-webkit-justify-content: -webkit-flex-end;
 		-ms-justify-content: -ms-flex-end;
-		justify-content: flex-end;
+		justify-content: center;
 		-moz-transition: opacity 1s ease, -moz-transform 1s ease;
 		-webkit-transition: opacity 1s ease, -webkit-transform 1s ease;
 		-ms-transition: opacity 1s ease, -ms-transform 1s ease;
@@ -3414,7 +3414,7 @@ input, select, textarea {
 		cursor: default;
 		text-align: center;
 		z-index: 1;
-		min-height: 90vh;
+		min-height: 100vh;
 	}
 
 		#intro input, #intro select, #intro textarea {
@@ -3495,7 +3495,7 @@ input, select, textarea {
 		}
 
 		#intro p {
-			font-size: 1.25rem;
+			font-size: 1.50rem;
 			font-style: italic;
 			margin-top: -0.25rem;
 			text-align: center;
@@ -3584,7 +3584,7 @@ input, select, textarea {
 				}
 
 				#intro p {
-					font-size: 1rem;
+					font-size: 1.35rem;
 					margin-top: 0rem;
 				}
 
@@ -3687,7 +3687,7 @@ input, select, textarea {
 		@media screen and (max-width: 980px) {
 
 			#header {
-				height: 14rem;
+				height: 19rem;
 				padding-bottom: 4rem;
 			}
 
@@ -4063,7 +4063,7 @@ input, select, textarea {
 
             #wrapper > .bg {
 			    background-position: right top;
-				background-size: auto, auto, auto 185%;
+				background-size: auto, auto, auto 195%;
 			}
 		}
 
