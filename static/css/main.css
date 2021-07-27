@@ -3593,7 +3593,6 @@ input, select, textarea {
 				}
 
 				#intro p {
-					font-size: 1rem;
 					margin-top: 0rem;
 				}
 
@@ -4062,6 +4061,10 @@ input, select, textarea {
 
 			#main {
 				width: 100%;
+			}
+
+			#intro p {
+				font-size: 1rem;
 			}
 
             /* Reduce font size when main takes up whole screen */
