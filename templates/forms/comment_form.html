@@ -5,10 +5,11 @@
                 {% if user.is_authenticated %}
                     <h2>Leave a comment</h2>
                     {# Welcome user if logged in #}
-                    <div class="row aln-middle">
+                    <div class="row aln-middle" style="margin-bottom: 10px;">
                         <h3><b class="lighten">Welcome, {{ user.get_full_name }}.</b></h3>
                         <h3><a class="lighten" href="{% url 'account_logout' %}?next={% firstof request.path '/' %}">Logout</a></h3>
                     </div>
+
 
                     {% if user_has_comment_perms %}
                     {# If logged in user has permission to comment on posts, display the create comment form #}
