@@ -2701,7 +2701,7 @@ input, select, textarea {
 
 	.image {
 		border: 0;
-		display: inline-block;
+		display: block;
 		position: relative;
 	}
 
@@ -4098,6 +4098,13 @@ input, select, textarea {
             #wrapper > .bg {
 			    background-position: right top;
 				background-size: auto, auto, auto 195%;
+			}
+
+			.image.right, .image.left {
+			    max-width: 100%;
+			    float: none;
+			    margin: 0 auto;
+			    margin: 0 0 1.5rem 0;
 			}
 		}
 
