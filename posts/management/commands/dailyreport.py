@@ -60,14 +60,15 @@ class Command(BaseCommand):
         html_content = template.render(data)
         text_content = strip_tags(html_content)
         subject = today.strftime("%Y-%m-%d") + " Blog Report"
-        if not (user_list, comment_list, reply_list):
-            subject += " EMPTY"
+        if comment_list and reply_list:
 
-        was_sent = send_email(scuubs_email, subject, html_content, text_content)
-        secondary_was_sent = send_email(personal_email, subject, html_content, text_content)
+            was_sent = send_email(scuubs_email, subject, html_content, text_content)
+            secondary_was_sent = send_email(personal_email, subject, html_content, text_content)
 
-        if was_sent and secondary_was_sent:
-            logging.getLogger("DEBUG").debug('Daily report sent')
-            self.stdout.write(self.style.SUCCESS('Daily report sent'))
+            if was_sent and secondary_was_sent:
+                logging.getLogger("DEBUG").debug('Daily report sent')
+                self.stdout.write(self.style.SUCCESS('Daily report sent'))
+            else:
+                raise CommandError('Failed sending report')
         else:
-            raise CommandError('Failed sending report')
+            logging.getLogger("DEBUG").debug('Nothing to report today - No report sent.')
