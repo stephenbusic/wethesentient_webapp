@@ -58,7 +58,7 @@
                                 {
                                     ticks: {
                                         beginAtZero: true,
-                                        stepSize: 1,
+                                        precision: 0
                                     },
                                 },
                             ],
@@ -136,7 +136,7 @@
                                 {
                                     ticks: {
                                         beginAtZero: true,
-                                        stepSize: 1,
+                                        precision: 0
                                     },
                                 },
                             ],
