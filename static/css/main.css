@@ -3918,6 +3918,11 @@ input, select, textarea {
 				    text-shadow: 0 0 15px #0b0b0b;
 				}
 
+				#main_subtitle {
+				    padding: 0 20px 0 20px;
+				    background: #0b0b0b;
+				}
+
 				#down_arrow {
 				    display: none;
 				}

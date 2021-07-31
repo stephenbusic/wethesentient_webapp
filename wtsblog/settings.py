@@ -24,7 +24,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_REFERRER_POLICY = 'same-origin'
 
-
 # Apply these security settings only if DEBUG
 # is false, since they break the site locally
 if not DEBUG:
@@ -39,7 +38,6 @@ if not DEBUG:
     ALLOWED_HOSTS = ['www.wethesentient.com']
 else:
     ALLOWED_HOSTS = ['127.0.0.1']
-
 
 # Email Settings
 EMAIL_USE_TLS = True
@@ -115,7 +113,6 @@ AUTHENTICATION_BACKENDS = [
 
 WSGI_APPLICATION = 'wtsblog.wsgi.application'
 
-
 # Use MySql if in Production
 if not DEBUG:
     DATABASES = {
@@ -144,7 +141,6 @@ else:
         }
     }
 
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -164,7 +160,7 @@ AUTH_PASSWORD_VALIDATORS = [
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
         'METHOD': 'oauth2',
-        'SCOPE': ['email', 'public_profile',],
+        'SCOPE': ['email', 'public_profile', ],
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
         'INIT_PARAMS': {'cookie': True},
         'FIELDS': [
@@ -186,7 +182,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERSION': 'v2.12',
     },
 
-     'google': {
+    'google': {
         'SCOPE': [
             'profile',
             'email',
@@ -208,14 +204,12 @@ SOCIALACCOUNT_PROVIDERS = {
 
 }
 
-
 # Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'US/Eastern'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
@@ -225,28 +219,25 @@ VENV_PATH = os.path.dirname(BASE_DIR)
 STATIC_ROOT = os.path.join(VENV_PATH, 'static_root')
 MEDIA_ROOT = os.path.join(VENV_PATH, 'media_root')
 
-
 # --- CKeditor Settings ---
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {
     'default': {
-       'toolbar_Full': [
-            ['Styles', 'Format', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
-            ['Link', 'Unlink', 'Anchor'],
-            ['Image', 'Flash', 'Table', 'HorizontalRule'],
-            ['TextColor', 'BGColor'],
-            ['SpecialChar'], ['Source'],
+        'width': 'auto',
+        'tabSpaces': 4,
+        'toolbar_Full': [
+            ['Font', 'FontSize', 'lineheight', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
+            ['Link', 'Unlink', 'Image'],
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Font', 'Subscript', 'Superscript'],
-            ['NumberedList', 'BulletedList'],
             ['Indent', 'Outdent'],
+            ['NumberedList', 'BulletedList'],
+            ['Subscript', 'Superscript', 'SpecialChar', 'Source'],
             ['Maximize'],
         ],
     },
-    'extraPlugins': ','.join(['tab','justify','liststyle','indent','uploadimage']),
-    'tabSpaces': 4,
+    'extraPlugins': ','.join(['tab', 'justify', 'liststyle', 'indent', 'uploadimage']),
 }
 
 # --- AllAuth Settings ---

@@ -1,6 +1,9 @@
 from django.contrib import admin
+from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
 from .models import AGPost, Comment, Reply, AGPostView
+from django.urls import reverse
+from urllib.parse import urljoin
 
 
 class AGPostAdmin(admin.ModelAdmin):
@@ -10,7 +13,11 @@ class AGPostAdmin(admin.ModelAdmin):
         return mark_safe('<a href="/admin/posts/agpostview/?agpost__id__exact=%d">%s</a>' %
                          (self.id, str(view_count) + ' views'))
 
-    list_display = ('title', 'type', 'date', agposts_views,)
+    def slug(self):
+        return mark_safe('<a href="/posts/%s">%s</a>' %
+                         (self.slug, self.slug))
+
+    list_display = ('title',  agposts_views, slug, 'type', 'date',)
     list_filter = ('type',)
 
 
