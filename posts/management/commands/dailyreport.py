@@ -72,3 +72,4 @@ class Command(BaseCommand):
                 raise CommandError('Failed sending report')
         else:
             logging.getLogger("DEBUG").debug('Nothing to report today - No report sent.')
+            self.stdout.write(self.style.SUCCESS('Nothing to report today - No report sent.'))
