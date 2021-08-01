@@ -228,7 +228,7 @@ CKEDITOR_CONFIGS = {
         'width': 'auto',
         'tabSpaces': 4,
         'toolbar_Full': [
-            ['Font', 'FontSize', 'lineheight', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
+            ['Font', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
             ['Link', 'Unlink', 'Image'],
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['Indent', 'Outdent'],
