@@ -38,7 +38,7 @@ class ReplyAdmin(admin.ModelAdmin):
 class AGPostViewAdmin(admin.ModelAdmin):
     fields = ('ip', 'session', 'created_on', 'agpost',)
     readonly_fields = ('created_on',)
-    list_display = ('agpost', 'created_on', 'ip', 'session',)
+    list_display = ('ip', 'session', 'created_on', 'agpost',)
     list_filter = ('agpost',)
 
 
