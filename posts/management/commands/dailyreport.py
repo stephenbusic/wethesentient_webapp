@@ -70,6 +70,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS('Daily report sent'))
             else:
                 raise CommandError('Failed sending report')
+                self.stdout.write(self.style.SUCCESS('Failed sending report'))
         else:
             logging.getLogger("DEBUG").debug('Nothing to report today - No report sent.')
             self.stdout.write(self.style.SUCCESS('Nothing to report today - No report sent.'))
