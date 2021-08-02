@@ -342,11 +342,6 @@ input, select, textarea {
 		border-bottom-color: #eeeeee;
 	}
 
-
-    #main_subtitle {
-        font-size: 1.5rem;
-    }
-
     /* Comment System */
 
     .comment_body {
@@ -3511,7 +3506,7 @@ input, select, textarea {
 		}
 
 		#intro p {
-			font-size: 1.25rem;
+			font-size: 1.5rem;
 			font-style: italic;
 			margin-top: -0.25rem;
 			text-align: center;
