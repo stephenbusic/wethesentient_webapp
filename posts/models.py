@@ -94,7 +94,7 @@ def announce_post(sender, **kwargs):
 # Model for each comment on a post
 class Comment(models.Model):
     agpost = models.ForeignKey(AGPost, null=True, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='comments')
     body = models.TextField(max_length=4000)
     created_on = models.DateTimeField(auto_now_add=True)
     deactivated_on = models.DateTimeField(null=True, blank=True)
@@ -137,7 +137,7 @@ class Comment(models.Model):
 # Model for reach reply on a comments
 class Reply(models.Model):
     comment = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE, related_name='replies')
-    author = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='replies')
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='replies')
     body = models.TextField(max_length=4000)
     handle_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='handles', blank=True)
     created_on = models.DateTimeField(auto_now_add=True)

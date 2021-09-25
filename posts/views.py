@@ -39,11 +39,11 @@ def show_post(request, slug):
 
         # Get all active comments, and for each active
         # comment, get all active replies
-        active_comments = req_agpost.comments.filter(active=True, author__is_active=True) \
+        active_comments = req_agpost.comments.filter(active=True) \
             .order_by('rank', '-created_on').prefetch_related(
             Prefetch(
                 'replies',
-                queryset=Reply.objects.filter(active=True, author__is_active=True),
+                queryset=Reply.objects.filter(active=True),
                 to_attr='active_replies'
             )
         )

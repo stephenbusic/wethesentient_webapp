@@ -5,7 +5,11 @@
 					<div class="bottom pad comment">
 						{# Header with comment's author and tags #}
 						<div class="row aln-middle">
+							{% if comment.author and comment.author.is_active %}
 							<h4>{{ comment.author.get_full_name }}</h4>
+							{% else %}
+							<h4>[deleted]</h4>
+							{% endif %}
 							<div class="lighten">{{ comment.created_on }}</div>
 							{% if comment.pinned %}<div class="lighten">[Pinned]</div>{% endif %}
 							{% if comment.edited %}<div class="lighten">[Edited]</div>{% endif %}
