@@ -113,7 +113,12 @@ class Comment(models.Model):
         if len(preview) > 25:
             preview = preview[0:25] + "..."
 
-        return '"{}" by {} on: {}'.format(preview, self.author.get_full_name(), self.agpost.title)
+        if self.author:
+            this_author = self.author.get_full_name()
+        else:
+            this_author = "[deleted]"
+
+        return '"{}" by {} on: {}'.format(preview, this_author, self.agpost.title)
 
     # Updated pin status on each save
     def save(self, *args, **kwargs):
@@ -158,8 +163,18 @@ class Reply(models.Model):
         if len(preview) > 25:
             preview = preview[0:25] + "..."
 
-        return '"{}" by {} on: {}\'s comment on {}'.format(preview, self.author.get_full_name(),
-                                                           self.comment.author.get_full_name(), self.comment.agpost.title)
+        if self.author:
+            this_author = self.author.get_full_name()
+        else:
+            this_author = "[deleted]"
+
+        if self.comment.author:
+            parent_author = self.comment.author.get_full_name()
+        else:
+            parent_author = "[deleted]"
+
+        return '"{}" by {} on: {}\'s comment on {}'.format(preview, this_author,
+                                                           parent_author, self.comment.agpost.title)
 
     # Updated pin status on each save
     def save(self, *args, **kwargs):
