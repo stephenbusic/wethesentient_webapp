@@ -6,23 +6,7 @@ from .models import Subscriber
 from django.urls import reverse
 from urllib.parse import urljoin
 from .encryption_utility import encrypt
-from django.core.mail import EmailMultiAlternatives
-from smtplib import SMTPException
-import logging
-from django.conf import settings
-
-
-def send_email(email, subject, html_content, text_content):
-
-    # Send email with subject as both html and plain text
-    msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
-    msg.attach_alternative(html_content, "text/html")
-    try:
-        msg.send(fail_silently=False)
-    except SMTPException as e:
-        logging.getLogger("error").error("There was an SMTPException sending a subscriber email: ", e)
-        return False
-    return True
+from common.util.send_email import send_email
 
 
 def send_subscription_email(email, sub_confirmation_url):
@@ -55,7 +39,7 @@ def send_unsub_email(email, username, unsub_confirmation_url):
 
 def send_subs_new_post_email(agpost):
 
-    for sub in Subscriber.objects.all():
+    for sub in Subscriber.email:
 
         domain = Site.objects.get_current().domain
         absolute_path = 'https://www.' + str(format(domain))

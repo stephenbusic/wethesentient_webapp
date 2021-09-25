@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from . import user_email_utility
 from common.util.recaptcha_utility import pass_recaptcha
-from .encryption_utility import *
+from common.util.encryption_utility import *
 from django.contrib.auth import get_user_model
 import logging
 
@@ -85,8 +85,7 @@ def request_deletion(request):
             reverse('users:deletion_confirmation')) + "?token=" + token
 
         # Send confirmation email and return status
-        status = user_email_utility.send_deletion_email(email, deletion_confirmation_url)
-        if status == "sent":
+        if user_email_utility.send_deletion_email(email, deletion_confirmation_url):
             msg = "Account deletion email sent. Check inbox to confirm."
             foot = "Be sure to check your junk folder."
         else:

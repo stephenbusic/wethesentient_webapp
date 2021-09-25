@@ -45,6 +45,7 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = config.gmail['address']
 EMAIL_HOST_PASSWORD = config.gmail['pword']
+DEFAULT_FROM_EMAIL = "WeTheSentient <" + config.gmail['address'] + ">"
 
 SECONDARY_EMAIL = config.gmail['second_address']
 
