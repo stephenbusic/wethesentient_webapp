@@ -60,7 +60,7 @@ class Command(BaseCommand):
         html_content = template.render(data)
         text_content = strip_tags(html_content)
         subject = today.strftime("%Y-%m-%d") + " Blog Report"
-        if comment_list and reply_list:
+        if comment_list or reply_list:
 
             was_sent = send_email(scuubs_email, subject, html_content, text_content)
             secondary_was_sent = send_email(personal_email, subject, html_content, text_content)
