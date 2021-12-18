@@ -407,10 +407,6 @@ input, select, textarea {
 		margin: 0 0 0.5rem 0;
     }
 
-    a.lighten {
-        text-decoration: underline;
-    }
-
     .top.pad {
         padding: 0.5rem 0 0 0;
     }
