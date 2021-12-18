@@ -1,6 +1,8 @@
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -64,6 +66,9 @@ class AGPost(models.Model):
                 i += 1
             self.slug = new_slug
         super(AGPost, self).save()
+
+    def get_absolute_url(self):
+        return reverse('posts:show', kwargs={'slug': self.slug})
 
 
 class AGPostView(models.Model):

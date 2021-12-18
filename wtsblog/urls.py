@@ -4,8 +4,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from django.contrib.sitemaps.views import sitemap
+from .agposts_sitemap import AGPostSitemap
+from .home_sitemap import HomePageSitemap
 
 app_name = 'root'
+
+sitemaps = {
+    'HomePage': HomePageSitemap,
+    'AGPosts': AGPostSitemap
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,7 +23,9 @@ urlpatterns = [
     path('posts/', include('posts.urls')),
     path('veganism/', include('veganism.urls')),
     path('users/', include('users.urls')),
-    path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+    path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
 ]
 
 admin.site.site_title = 'admin | WETHESENTIENT'

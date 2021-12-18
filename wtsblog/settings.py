@@ -51,6 +51,8 @@ SECONDARY_EMAIL = config.gmail['second_address']
 
 # Application definition
 INSTALLED_APPS = [
+
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.sitemaps',
 
     # 3rd party apps
     'django_inlinecss',
