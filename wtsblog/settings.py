@@ -27,6 +27,7 @@ SECURE_REFERRER_POLICY = 'same-origin'
 # Apply these security settings only if DEBUG
 # is false, since they break the site locally
 if not DEBUG:
+    PREPEND_WWW = True
     CSRF_COOKIE_SECURE = True
     CSRF_COOKIE_SAMESITE = 'Strict'
     SECURE_SSL_REDIRECT = True
