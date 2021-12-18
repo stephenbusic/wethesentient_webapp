@@ -16,7 +16,7 @@
 						</div>
 						{# Comment body #}
 						<div class="comment_body">
-							{{ comment.body }}
+							{{ comment.body|linebreaksbr }}
 						</div>
 						{% if user_logged_in %}
 							{# If logged in user is author, add EDIT button. Else, if logged in user is not author, add reply button #}
@@ -66,7 +66,7 @@
 											{% else %}
 											<div class="reply_handle">@[deleted]</div>
 											{% endif %}
-											{{ reply.body }}
+											{{ reply.body|linebreaksbr }}
 										</div>
 									</div>
 									{% if user_logged_in %}
