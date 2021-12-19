@@ -6,6 +6,6 @@ class HomePageSitemap(Sitemap):
     def items(self):
         return [self]
 
-    location = '/'
+    location = ''
     changefreq = 'monthly'
     priority = '1'

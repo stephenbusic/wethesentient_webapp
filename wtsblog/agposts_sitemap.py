@@ -1,8 +1,4 @@
 from django.contrib.sitemaps import Sitemap
-from django.contrib.sites.models import Site
-from django.urls import reverse
-from urllib.parse import urljoin
-
 from posts.models import AGPost
 
 class AGPostSitemap(Sitemap):
