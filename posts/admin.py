@@ -1,9 +1,6 @@
 from django.contrib import admin
-from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
 from .models import AGPost, Comment, Reply, AGPostView
-from django.urls import reverse
-from urllib.parse import urljoin
 
 
 class AGPostAdmin(admin.ModelAdmin):

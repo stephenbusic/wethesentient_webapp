@@ -1,9 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import Group
-from django.contrib.sites.models import Site
-from allauth.account.models import EmailAddress
 from django.utils.safestring import mark_safe
 from posts.models import Comment, Reply
 
@@ -28,9 +25,4 @@ class UserAdmin(UserAdmin):
 # Re-register UserAdmin to apply changes
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-
-# Unregister unneeded models
-admin.site.unregister(EmailAddress)
-admin.site.unregister(Group)
-admin.site.unregister(Site)
 
