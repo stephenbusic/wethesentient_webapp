@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.contrib.sitemaps.views import sitemap
 from .agposts_sitemap import AGPostSitemap
 from .home_sitemap import HomePageSitemap
@@ -23,9 +23,11 @@ urlpatterns = [
     path('posts/', include('posts.urls')),
     path('veganism/', include('veganism.urls')),
     path('users/', include('users.urls')),
-    path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
+    # For bots and webcrawlers
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('favicosn.ico', RedirectView.as_view(url=(settings.STATIC_URL + 'favicon.ico'), permanent=True)),
 ]
 
 admin.site.site_title = 'admin | WETHESENTIENT'
