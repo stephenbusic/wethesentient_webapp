@@ -42,7 +42,7 @@ def send_subs_new_post_email(agpost):
     for sub in Subscriber.email:
 
         domain = Site.objects.get_current().domain
-        absolute_path = 'https://www.' + str(format(domain))
+        absolute_path = 'https://' + str(format(domain))
 
         # Build unsubscribe link
         token = encrypt(sub.email + "-" + timezone.now().today().strftime("%Y%m%d"))
@@ -58,7 +58,7 @@ def send_subs_new_post_email(agpost):
         data["unsubscribe_url"] = unsub_confirmation
         template = get_template("email_templates/post_email.html")
 
-        # Render email text (html and plain) and set subjet
+        # Render email text (html and plain) and set subject
         html_content = template.render(data)
         text_content = strip_tags(html_content)
         subject = agpost.title

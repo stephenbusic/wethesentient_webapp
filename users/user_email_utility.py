@@ -11,7 +11,7 @@ from common.util.send_email import send_email
 def send_reply_notice(parent, reply):
 
     domain = Site.objects.get_current().domain
-    absolute_path = 'https://www.' + str(format(domain))
+    absolute_path = 'https://' + str(format(domain))
 
     recipient = parent.author
     email = recipient.email
