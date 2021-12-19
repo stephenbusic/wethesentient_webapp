@@ -15,10 +15,3 @@ class AGPostSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.date
-
-    def location(self, obj):
-        domain = Site.objects.get_current().domain
-        absolute_path = 'www.' + str(format(domain))
-
-        # Build post link
-        return obj.slug
