@@ -52,6 +52,10 @@
                                             day: 'MMM D',
                                         },
                                     },
+                                    ticks: {
+                                        maxRotation: 0,
+                                        minRotation: 0
+                                    }
                                 },
                             ],
                             yAxes: [
@@ -130,6 +134,10 @@
                                             day: 'MMM D',
                                         },
                                     },
+                                    ticks: {
+                                        maxRotation: 0,
+                                        minRotation: 0
+                                    }
                                 },
                             ],
                             yAxes: [
