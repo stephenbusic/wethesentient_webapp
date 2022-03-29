@@ -199,7 +199,8 @@ def find_agpost(slug):
 def record_post_view(request):
 
     # Proceed only if ajax request
-    if request.is_ajax():
+    is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+    if is_ajax and request.method == 'POST':
 
         data = {'success': False}
 
@@ -227,9 +228,10 @@ def record_post_view(request):
 # View called by ajax to fetch view data
 def get_viewchart_data(request):
 
-    if request.is_ajax():
+    is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+    if is_ajax and request.method == 'GET':
 
-        duration = 30
+        duration = 90
         now = timezone.now()
         time_threshhold = now - timezone.timedelta(days=duration)
 

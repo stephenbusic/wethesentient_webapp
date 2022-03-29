@@ -8,20 +8,19 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
 <script>
+    var csrf_token = '{{ csrf_token }}';
     var subs_data_url = "{% url 'homepage:get_subchart_data' %}";
     var views_data_url = "{% url 'posts:get_viewchart_data' %}";
-    var csrf_token = '{{ csrf_token }}';
 </script>
 <script src="{% static 'js/admin_index_charts.js' %}"></script>
 
 <h3 style="font-size: 250%;">Analytics</h3>
 <div id="graphs">
-    <div class="chart-container left" style="flex: 1 1;">
+    <div class="chart-container left">
         <canvas style="margin-bottom: 30px;" id="SubsChart"></canvas>
         <h3 id="total_subs" style="font-size: 175%;"></h3>
         <br>
-    </div>
-    <div class="chart-container" style="flex: 1 1;">
+    </div><div class="chart-container right">
         <canvas style="margin-bottom: 30px;" id="ViewsChart"></canvas>
         <h3 id="total_views" style="font-size: 175%;"></h3>
         <br>

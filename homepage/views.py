@@ -177,8 +177,11 @@ def hasnt_timed_out(link_date, max_age):
 
 # View called by ajax to fetch sub data
 def get_subchart_data(request):
-    if request.is_ajax():
-        duration = 30
+
+    is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+    if is_ajax and request.method == 'GET':
+
+        duration = 90
         now = timezone.now()
         time_threshhold = now - timezone.timedelta(days=duration)
 

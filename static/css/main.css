@@ -168,13 +168,11 @@ input, select, textarea {
 		transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 		/*border-bottom: dotted 1px;*/
 		text-decoration: none;
-
-
 	}
 
-		a:hover {
-			border-bottom-color: transparent;
-		}
+    a:hover {
+        border-bottom-color: transparent;
+    }
 
 	strong, b {
 		font-weight: 600;

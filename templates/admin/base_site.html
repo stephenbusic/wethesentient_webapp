@@ -1,25 +1,29 @@
 {% extends "admin/base_site.html" %}
 
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">WE THE SENTIENT<br \>[admin page]</a></h1>
+<h1 id="site-name"><a href="{% url 'admin:index' %}">WE THE SENTIENT<br>[admin page]</a></h1>
 {% endblock %}
 
 {% block extrastyle %}
 <style>
 
     .dashboard #content {
-        width: 45%;
-    }
-
-    .chart-container.left {
-        margin-right: 25px;
+        width: 70%;
     }
 
     .dashboard #graphs {
-        width: 204%;
+        width: 130%;
         height: 100%;
         display: flex;
-        overflow: auto;
+    }
+
+    .chart-container.left {
+        flex: 1;
+        padding-right: 25px;
+    }
+
+    .chart-container.right {
+        flex: 1;
     }
 
     @media screen and (max-width: 767px) {
@@ -31,7 +35,7 @@
         }
 
         .chart-container.left {
-            margin-right: 0px;
+            padding-right: 0px;
         }
     }
 

@@ -92,6 +92,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'wtsblog.urls'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 TEMPLATES = [
     {
