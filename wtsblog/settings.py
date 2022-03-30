@@ -35,7 +35,7 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-    ALLOWED_HOSTS = ['www.wethesentient.com']
+    ALLOWED_HOSTS = ['45.79.205.57', 'wethesentient.com', 'www.wethesentient.com']
 else:
     ALLOWED_HOSTS = ['127.0.0.1']
 
@@ -118,31 +118,22 @@ AUTHENTICATION_BACKENDS = [
 
 WSGI_APPLICATION = 'wtsblog.wsgi.application'
 
-# Use MySql if in Production
-if not DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': config.wtsmysql['name'],
-            'USER': config.wtsmysql['user'],
-            'PASSWORD': config.wtsmysql['pword'],
-            'HOST': config.wtsmysql['host'],
-            'TEST': {
-                'NAME': config.wtsmysql['testname'],
-            },
-            'OPTIONS': {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-                'charset': 'utf8mb4',
-            },
-        }
-    }
-
-# Else if testing locally, use SQLite
-else:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'NAME': 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': config.sk8riot_psql['name'],
+            'USER': config.sk8riot_psql['user'],
+            'PASSWORD': config.sk8riot_psql['passwd'],
+            'HOST': 'localhost',
+            'PORT': '',
         }
     }
 
