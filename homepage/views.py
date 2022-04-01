@@ -1,6 +1,6 @@
 from django.db.models import Count
 from django.db.models.functions import TruncDay
-from django.http import Http404, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
@@ -11,6 +11,9 @@ from . import sub_email_utility
 from .encryption_utility import encrypt, decrypt
 from .forms import SubscriberForm
 from .models import Subscriber
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 # Show index page
@@ -55,10 +58,11 @@ def process_sub_form(request):
             if sub_email_utility.send_subscription_email(email, subscription_confirmation_url):
                 msg = "Thanks for subscribing. Check inbox to confirm <3"
                 foot = "Might be in your junk folder btw."
+                logger.info("SUCCESS: sub email sent to " + email)
             else:
                 msg = "Sorry. Sending confirmation email failed. Try again later!"
                 foot = ""
-
+                logger.error("ERROR: FAILED to send to sub email to " + email)
             return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
         else:
@@ -114,11 +118,13 @@ def sub_confirmation(request):
                     new_sub = Subscriber(email=sub_email)
                     new_sub.save()
                     msg = "Subscription confirmed. Thank you for following my blog!"
+                    logger.info("SUCCESS: sub confirmed for " + sub_email)
                     return render(request, 'msgpage.html', {'msg': msg})
                 else:
                     msg = "Email is already subscribed!"
                     foot = "If you are trying to unsubscribe, look for a unsubscription link at the bottom of any of " \
                            "my emails. "
+                    logger.error("ERROR: FAILED to confirm sub " + sub_email)
                     return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
     # Return error is failed decrypt
@@ -162,9 +168,11 @@ def unsub_confirmation(request):
                 sub = Subscriber.objects.get(email=email)
                 sub.delete()
                 msg = "Unsubscribed. So long, cap'n <3"
+                logger.info("SUCCESS: unsub confirmed for " + email)
                 return render(request, 'msgpage.html', {'msg': msg})
 
     msg = "Link Invalid or Timed Out"
+    logger.error("ERROR: FAILED to unsub" + email)
     return render(request, 'msgpage.html', {'msg': msg})
 
 

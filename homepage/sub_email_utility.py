@@ -7,6 +7,9 @@ from django.urls import reverse
 from urllib.parse import urljoin
 from .encryption_utility import encrypt
 from common.util.send_email import send_email
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 def send_subscription_email(email, sub_confirmation_url):
@@ -16,7 +19,7 @@ def send_subscription_email(email, sub_confirmation_url):
     data["confirmation_url"] = sub_confirmation_url
     template = get_template("email_templates/sub_email.html")
 
-    # Render email text (html and plain) and set subjet
+    # Render email text (html and plain) and set subject
     html_content = template.render(data)
     text_content = strip_tags(html_content)
     subject = "Confirm Subscription"
@@ -30,7 +33,7 @@ def send_unsub_email(email, username, unsub_confirmation_url):
     data["confirmation_url"] = unsub_confirmation_url
     template = get_template("email_templates/deletion_email.html")
 
-    # Render email text (html and plain) and set subjet
+    # Render email text (html and plain) and set subject
     html_content = template.render(data)
     text_content = strip_tags(html_content)
     subject = "Cancel Subscription"
@@ -62,4 +65,11 @@ def send_subs_new_post_email(agpost):
         html_content = template.render(data)
         text_content = strip_tags(html_content)
         subject = agpost.title
+
+        logging.info("Trying to send notification email for post " + subject + " to sub " + sub.email + "...")
         status = send_email(sub.email, subject, html_content, text_content)
+
+        if status:
+            logger.info("SUCCESS: Notification sent to sub " + sub.email + " for post " + subject)
+        else:
+            logger.error("ERROR: Notification FAILED to send to sub " + sub.email + " for post " + subject)
