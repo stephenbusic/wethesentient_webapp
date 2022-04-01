@@ -39,7 +39,7 @@ def send_unsub_email(email, username, unsub_confirmation_url):
 
 def send_subs_new_post_email(agpost):
 
-    for sub in Subscriber.email:
+    for sub in Subscriber.objects.all():
 
         domain = Site.objects.get_current().domain
         absolute_path = 'https://' + str(format(domain))
