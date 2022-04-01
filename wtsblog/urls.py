@@ -21,7 +21,6 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('homepage.urls')),
     path('posts/', include('posts.urls')),
-    path('veganism/', include('veganism.urls')),
     path('users/', include('users.urls')),
 
     # For bots and webcrawlers

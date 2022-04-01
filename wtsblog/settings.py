@@ -77,7 +77,6 @@ INSTALLED_APPS = [
     # Custom apps
     'homepage',
     'posts',
-    'veganism',
     'users',
 ]
 
@@ -136,6 +135,20 @@ else:
             'PORT': '',
         }
     }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
