@@ -234,6 +234,7 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {
     'default': {
+        'skin': 'flat',
         'width': 'auto',
         'tabSpaces': 4,
         'toolbar_Full': [
