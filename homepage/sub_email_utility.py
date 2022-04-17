@@ -11,10 +11,6 @@ from .encryption_utility import encrypt
 from common.util.send_email import send_email
 from asgiref.sync import sync_to_async
 import logging
-from multiprocessing import Process, Lock
-import django
-import multiprocessing as mp
-# mp.set_start_method('fork')
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -74,6 +70,8 @@ async def setup_async_sub_email_loop(agpost, loop):
         # Get this subscriber's email
         email = sub.email
 
+        task_id = str(i+1)
+
         # Build unique unsubscribe link
         token = encrypt(email + "-" + timezone.now().today().strftime("%Y%m%d"))
         unsub_confirmation = urljoin(absolute_path, reverse('homepage:unsub_confirmation') + "?token=" + token)
@@ -82,26 +80,28 @@ async def setup_async_sub_email_loop(agpost, loop):
         data["unsubscribe_url"] = unsub_confirmation
 
         # Attempt to send notification email
-        logging.info("Trying to send notification email for post " + subject + " to sub " + email + "...")
-        loop.create_task(try_to_send_post_notification(email, subject, html_content, text_content), name=("task" + str(i)))
+        logging.info("[{0}] sending to {1}...".format(task_id, email))
+        loop.create_task(try_to_send_post_notification(email, subject, html_content, text_content, task_id), name=("task " + task_id))
 
 
 # Send notification email, log the results.
-async def try_to_send_post_notification(email, subject, html_content, text_content):
+async def try_to_send_post_notification(email, subject, html_content, text_content, task_id):
     if send_email(email, subject, html_content, text_content):
-        logger.info("SUCCESS: Notification sent to sub " + email + " for post " + subject)
+        logger.info("[SUCCESS] email task {0} complete for {1}".format(task_id, email))
     else:
-        logger.error(
-            "ERROR: Notification FAILED to send to sub " + email + " for post " + subject)
+        logger.error("[ERROR] email task {0} FAILED sending to {1} for post: {2}".format(task_id, email, subject))
 
 
 # Entry point for execution.
 def send_subs_new_post_email(agpost):
-    logger.info("Setting up async emailing loop...")
+    logger.info("[START] Setting up loop to email {0} subscribers for post: {1}"
+                .format(len(Subscriber.objects.all()), agpost.title))
+
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(setup_async_sub_email_loop(agpost, loop))
     loop.close()
+    logger.info("[FINISH] Emailing loop complete for post: " + agpost.title)
 
 
 @sync_to_async
