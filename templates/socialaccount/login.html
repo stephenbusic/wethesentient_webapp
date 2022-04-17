@@ -13,6 +13,9 @@
     <h2>{% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}</h2>
 
     <p>{% blocktrans with provider.name as provider %}You are about to sign in using a third party account from {{ provider }}.{% endblocktrans %}</p>
+    <p>The only information my blog fetches from your account is your name and email.
+        <br>Feel free to read my blog's <a href="{% url 'homepage:show_policy' %}"><u>privacy policy</u></a> and <a href="{% url 'homepage:show_terms' %}"><u>terms of use</u></a>
+    </p>
     {% endif %}
 
     <form method="post">
