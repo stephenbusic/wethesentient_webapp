@@ -9,8 +9,8 @@ from django.utils import timezone
 from posts.models import Comment, Reply, AGPostView
 from homepage.models import Subscriber
 
-
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -66,11 +66,9 @@ class Command(BaseCommand):
             secondary_was_sent = send_email(personal_email, subject, html_content, text_content)
 
             if was_sent and secondary_was_sent:
-                logging.getLogger("DEBUG").debug('Daily report sent')
-                self.stdout.write(self.style.SUCCESS('Daily report sent'))
+                logger.info('[RAN DAILYREPORT] Daily report sent')
             else:
                 raise CommandError('Failed sending report')
-                self.stdout.write(self.style.SUCCESS('Failed sending report'))
+                logger.error("[RAN DAILYREPORT] ERROR: Failed sending report")
         else:
-            logging.getLogger("DEBUG").debug('Nothing to report today - No report sent.')
-            self.stdout.write(self.style.SUCCESS('Nothing to report today - No report sent.'))
+            logger.info('[RAN DAILYREPORT] Nothing to report today - No report sent.')

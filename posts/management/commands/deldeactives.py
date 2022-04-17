@@ -5,6 +5,8 @@ from django.utils import timezone
 from posts.models import Comment, Reply
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
+
 
 class Command(BaseCommand):
     help = 'Deletes deactivated users, comments, and replies that ' \
@@ -32,6 +34,4 @@ class Command(BaseCommand):
             user.delete()
             del_count += 1
 
-        logging.getLogger("DEBUG").debug('RAN DELDEACTIVES: Deleted %s inactive objects' % del_count)
-
-        self.stdout.write(self.style.SUCCESS('Deleted %s inactive objects' % del_count))
+        logger.info("[RAN DELDEACTIVES] Deleted {0} inactive objects".format(del_count))
