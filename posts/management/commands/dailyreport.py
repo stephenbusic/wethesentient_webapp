@@ -71,4 +71,4 @@ class Command(BaseCommand):
                 raise CommandError('Failed sending report')
                 logger.error("[RAN DAILYREPORT] ERROR: Failed sending report")
         else:
-            logger.info('[RAN DAILYREPORT] Nothing to report today - No report sent.')
+            logger.info('[RAN DAILYREPORT] Nothing to report today - No report sent')
