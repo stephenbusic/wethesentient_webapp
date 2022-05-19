@@ -75,8 +75,19 @@
             // If delete button exists and was clicked, set value
             // of the hidden input field "edit_type" to "delete"
             if ( $('#delete_' + clicked_id).length ) {
-                $('#delete_' + clicked_id).click(function() {
-                    document.getElementById("is_deletion_" + clicked_id).value = "true";
+                $('#delete_' + clicked_id).click(function(e){
+                    let del_button = this;
+
+                    // If value of button is sure, then user has double clicked.
+                    // Go through with deletion.
+                    if (del_button.value == 'Sure?') {
+                        document.getElementById("is_deletion_" + clicked_id).value = "true";
+
+                    // Else, require a second click for confirmation.
+                    } else {
+                        e.preventDefault();
+                        del_button.value = 'Sure?';
+                    }
                 });
             }
 

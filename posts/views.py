@@ -53,7 +53,7 @@ def show_post(request, slug):
         # 1) request is of method POST
         # 2) request passes recaptcha test
         if request.method == 'POST' and pass_recaptcha(request):
-            print("here??")
+
             # CREATE NEW SUB
             if 'create_subscription' in request.POST:
 
