@@ -1,14 +1,16 @@
 from django.core.mail import send_mail
-from smtplib import SMTPException
+from smtplib import SMTPException, SMTPAuthenticationError
 import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 def send_email(email, subject, html_content, text_content):
 
     # Send email with subject as both html and plain text
     try:
-        send_mail(subject, text_content, None, [email], html_message=html_content, fail_silently=True)
+        send_mail(subject, text_content, None, [email], html_message=html_content, fail_silently=False)
         return True
-    except SMTPException as e:
-        logging.getLogger("error").error("There was an SMTPException sending a user email: ", e)
+    except (SMTPException, SMTPAuthenticationError) as e:
+        logger.error("There was an SMTPException sending a user email:\n", e)
         return False
