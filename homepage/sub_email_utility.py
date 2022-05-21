@@ -80,7 +80,6 @@ async def setup_async_sub_email_loop(agpost, loop):
         data["unsubscribe_url"] = unsub_confirmation
 
         # Attempt to send notification email
-        logging.info("[{0}] sending to {1}...".format(task_id, email))
         loop.create_task(try_to_send_post_notification(email, subject, html_content, text_content, task_id), name=("task " + task_id))
 
 
