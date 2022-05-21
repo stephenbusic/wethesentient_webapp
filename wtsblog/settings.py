@@ -48,8 +48,6 @@ EMAIL_HOST_PASSWORD = config.gmail['pword']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "WeTheSentient <" + config.gmail['address'] + ">"
 
-SECONDARY_EMAIL = config.gmail['second_address']
-
 # Application definition
 INSTALLED_APPS = [
 
