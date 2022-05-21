@@ -62,12 +62,12 @@ def unnotify_confirmation(request):
                         target.save()
                         msg = "Request complete!"
                         foot = "Notifcations for your " + obj_type + " have been disabled."
-                        logging.info("SUCCESS: Notifications for " + user.get_full_name() +
+                        logging.info("[SUCCESS] Notifications for " + user.get_full_name() +
                                      "'s " + obj_type + " disabled.")
                         return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
             except Exception as e:
-                logging.error("ERROR: There was an exception while trying to disable notifications. "
+                logging.error("[ERROR] There was an exception while trying to disable notifications. "
                                                  "request: " + str(request) + ' ---ERROR:  ' + str(e))
 
     return render(request, 'msgpage.html', {'msg': "Invalid Link"})
@@ -91,7 +91,7 @@ def request_deletion(request):
         if user_email_utility.send_deletion_email(email, deletion_confirmation_url):
             msg = "Account deletion email sent. Check inbox to confirm."
             foot = "Be sure to check your junk folder."
-            logging.info("SUCCESS: account deletion confirmation email sent to " + email)
+            logging.info("[SUCCESS] account deletion confirmation email sent to " + email)
         else:
             msg = "Sorry. Sending confirmation email failed. Try again later!"
             foot = ""
@@ -148,7 +148,7 @@ def deletion_confirmation(request):
 
                     msg = "Account deactivated."
                     foot = "Your account will be permanently deleted after 5 days if you do not login again. Take care!"
-                    logging.info("SUCCESS: account deletion confirmation recieved and processed for " + user.get_full_name())
+                    logging.info("[SUCCESS] account deletion confirmation recieved and processed for " + user.get_full_name())
                     return render(request, 'msgpage.html', {'msg': msg, 'foot': foot})
 
             logging.error("FAILURE: account deletion confirmation FAILED for " + email)
