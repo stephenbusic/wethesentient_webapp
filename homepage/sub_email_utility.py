@@ -85,9 +85,7 @@ async def setup_async_sub_email_loop(agpost, loop):
 
 # Send notification email, log the results.
 async def try_to_send_post_notification(email, subject, html_content, text_content, task_id):
-    if send_email(email, subject, html_content, text_content):
-        logger.info("[SUCCESS] email task {0} complete for {1}".format(task_id, email))
-    else:
+    if not send_email(email, subject, html_content, text_content):
         logger.error("[ERROR] email task {0} FAILED sending to {1} for post: {2}".format(task_id, email, subject))
 
 

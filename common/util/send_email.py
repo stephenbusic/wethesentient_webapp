@@ -10,7 +10,7 @@ def send_email(email, subject, html_content, text_content):
     logging.info("Sending email to {0}...".format(email))
     sent = bool(send_mail(subject, text_content, None, [email], html_message=html_content, fail_silently=False))
     if sent:
-        logging.info("[SUCCESS] email sent!")
+        logging.info("[SUCCESS] email sent for " + email)
     else:
         logging.info("[FAILED] not sent!")
     return sent
